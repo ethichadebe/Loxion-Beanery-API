@@ -17,7 +17,9 @@ const conn = mysql.createConnection({
 //Returns all shops
 router.get('/', (req, res, next) => {
     conn.query("SELECT * FROM shops", (err, rows, fields) => {
-        res.json(rows);
+        res.json({
+            shops: rows
+        });
     });
 });
 
