@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const router = express.Router();
 
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //Database connection
 const conn = mysql.createConnection({
@@ -15,39 +15,23 @@ const conn = mysql.createConnection({
 });
 
 //Returns all shops
-router.get('/', (req, res, next) =>{
+router.get('/', (req, res, next) => {
     conn.query("SELECT * FROM shops", (err, rows, fields) => {
         res.json(rows);
     });
 });
 
-//Returns a specific shop 
-router.get('/:sID', (req, res, next) =>{
-    conn.query("SELECT * FROM users WHERE sID = ?",[req.params.sID], (err, rows, fields) => {
+router.post('/Register', (req, res) => {
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sOperatingHrs`,`isActive`) VALUES (?, ?,?, ?,?, ?, 0.0,?,0)";
+
+    conn.query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
+    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLocation, req.body.sOperatingHrs], (err, result, fields) => {
         console.log(err);
-        res.json(rows);
+        console.log(result);
+        res.json({
+            data: result.insertId
+        })
     });
-});
-
-//insert a user
-router.post('/', (req, res, next) =>{
-    res.status(200).json({
-        message: 'POST request'
-    })
-});
-
-//Returns a specific user 
-router.post('/Login', (req, res) =>{
-    //const userID = req.params.id;
-    res.json([{
-        message: req.body.uID
-    }]);
-    /*conn.query("SELECT * FROM users WHERE uID = ?",[req.body.uID], (err, rows, fields) => {
-        console.log(err);
-        res.json([{
-            message: req.body.uID
-        }]);
-    });*/
 });
 
 module.exports = router;

@@ -19,13 +19,6 @@ router.get('/', (req, res, next) => {
     });
 });
 
-//insert a user
-router.post('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'POST request'
-    })
-});
-
 //Returns a specific user 
 router.post('/Login', (req, res) => {
     const selectQuery = "SELECT * FROM users WHERE uNumber = ? AND uPassword = ?";
@@ -43,14 +36,14 @@ router.post('/Login', (req, res) => {
     });
 });
 
-//User registration 
+//New user registration 
 router.post('/Register', (req, res) => {
     const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uDOB`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`isActive`) VALUES (?, ?,?, ?, ?, ?,?,1)";
     const selectQuery = "SELECT * FROM users WHERE uNumber = ? AND uEmail = ?";
     const selectQuery1 = "SELECT * FROM users WHERE uNumber = ?";
     const selectQuery2 = "SELECT * FROM users WHERE uEmail = ?";
 
-    //Check if number and email exists
+    //Check if number and email exists then register 
     conn.query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
         if (result.length > 0) {
             console.log(result);
@@ -74,8 +67,8 @@ router.post('/Register', (req, res) => {
                         } else {
                             conn.query(insQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uEmail,
                             req.body.uNumber, req.body.uPassword], (err, result, fields) => {
-                                console.log(err);
-                                console.log(result);
+                                //console.log(err);
+                                console.log(result.insertId);
                                 res.json({
                                     data: "Registered"
                                 })
