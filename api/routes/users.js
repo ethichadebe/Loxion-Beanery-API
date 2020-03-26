@@ -82,4 +82,50 @@ router.post('/Register', (req, res) => {
 
 });
 
+//Update user information
+router.put('/EditProfile', (req, res, next) => {
+    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uEmail = ?, uNumber = ?, uPassword = ?, isActive = ?) WHERE uID = ?";
+    /*const selectQuery = "SELECT * FROM users WHERE uNumber = ? AND uEmail = ?";
+    const selectQuery1 = "SELECT * FROM users WHERE uNumber = ?";
+    const selectQuery2 = "SELECT * FROM users WHERE uEmail = ?";*/
+
+    //Check if number and email exists then register 
+    conn.query(updateQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
+        if (result.length > 0) {
+            console.log(result);
+            res.json({
+                data: "both"
+            });
+        } else {
+            //Check if number exists
+            conn.query(selectQuery1, [req.body.uNumber], (err, result, fields) => {
+                if (result.length > 0) {
+                    res.json({
+                        data: "number"
+                    });
+                } else {
+                    //Check if email exists
+                    conn.query(selectQuery2, [req.body.uEmail], (err, result, fields) => {
+                        if (result.length > 0) {
+                            res.json({
+                                data: "email"
+                            })
+                        } else {
+                            conn.query(insQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uEmail,
+                            req.body.uNumber, req.body.uPassword], (err, result, fields) => {
+                                //console.log(err);
+                                console.log(result.insertId);
+                                res.json({
+                                    data: "Registered"
+                                })
+                            });
+                        };
+                    });
+                }
+            });
+        }
+    });
+
+});
+
 module.exports = router;

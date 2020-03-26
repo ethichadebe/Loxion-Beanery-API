@@ -23,7 +23,7 @@ router.get('/', (req, res, next) => {
     });
 });
 
-router.post('/Register', (req, res) => {
+router.post('/Register', (req, res, next) => {
     const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sOperatingHrs`,`isActive`) VALUES (?, ?,?, ?,?, ?, 0.0,?,0)";
 
     conn.query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
