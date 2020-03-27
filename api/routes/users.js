@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
 
 //Returns a specific user 
 router.post('/Login', (req, res) => {
-    const selectQuery = "SELECT * FROM users WHERE uNumber = ? AND uPassword = ?";
+    const selectQuery = "SELECT * FROM users WHERE (uNumber = ? AND uPassword = ?)";
     conn.query(selectQuery, [req.body.uNumber, req.body.uPassword], (err, result, fields) => {
         console.log(result)// + " " + req.body.uNumber + " " + req.body.uPassword);
         if (result.length > 0) {

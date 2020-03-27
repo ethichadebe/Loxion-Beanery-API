@@ -23,6 +23,7 @@ router.get('/', (req, res, next) => {
     });
 });
 
+//Register shop
 router.post('/Register', (req, res, next) => {
     const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sOperatingHrs`,`isActive`) VALUES (?, ?,?, ?,?, ?, 0.0,?,0)";
 
@@ -32,6 +33,32 @@ router.post('/Register', (req, res, next) => {
         console.log(result);
         res.json({
             data: result.insertId
+        })
+    });
+});
+
+//Register shop Ingredients
+router.post('/Register/Ingredient', (req, res, next) => {
+    const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,'isActive') VALUES (?, ?, ?, 1)";
+
+    conn.query(insQuery, [req.body.iName, req.body.iPrice, req.body.sID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "saved"
+        })
+    });
+});
+
+//Register shop Menu items
+router.post('/Register/MenuItem', (req, res, next) => {
+    const insQuery = "INSERT INTO ingredients(`mList`,`mPrice`,`sID`,'isActive') VALUES (?, ?, ?, 1)";
+
+    conn.query(insQuery, [req.body.mList, req.body.mPrice, req.body.sID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "saved"
         })
     });
 });
