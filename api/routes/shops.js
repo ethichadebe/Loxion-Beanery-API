@@ -16,10 +16,31 @@ const conn = mysql.createConnection({
 
 //Returns all shops
 router.get('/', (req, res, next) => {
+    var shopDetails = [];
+    var ingredients = [];
+    var menuList = [];
     conn.query("SELECT * FROM shops", (err, rows, fields) => {
-        res.json({
-            shops: rows
-        });
+        shopDetails = rows;
+        for (var i = 0; i < rows.length; i++) {
+            var shop = shopDetails[i];
+            var id = shopDetails[i].sID;
+            console.log(id);
+            conn.query("SELECT * FROM menuitems WHERE sID = ?", id, (err, rows, fields) => {
+                ingredients = rows;
+                console.log(ingredients);
+
+                conn.query("SELECT * FROM ingredients WHERE sID = ?", id, (err, rows, fields) => {
+                    menuList = rows
+                    console.log(menuList);
+
+                    res.json({
+                        data : shop,
+                        ingredients: ingredients,
+                        menuList:menuList
+                    });
+                });
+            });
+        }
     });
 });
 
@@ -39,7 +60,7 @@ router.post('/Register', (req, res, next) => {
 
 //Register shop Ingredients
 router.post('/Register/Ingredient', (req, res, next) => {
-    const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,'isActive') VALUES (?, ?, ?, 1)";
+    const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,`isActive`) VALUES (?, ?, ?, 1)";
 
     conn.query(insQuery, [req.body.iName, req.body.iPrice, req.body.sID], (err, result, fields) => {
         console.log(err);
@@ -52,9 +73,22 @@ router.post('/Register/Ingredient', (req, res, next) => {
 
 //Register shop Menu items
 router.post('/Register/MenuItem', (req, res, next) => {
-    const insQuery = "INSERT INTO ingredients(`mList`,`mPrice`,`sID`,'isActive') VALUES (?, ?, ?, 1)";
+    const insQuery = "INSERT INTO menuitems(`mList`,`mPrice`,`isActive`,`sID`) VALUES (?, ?, 1, ?)";
 
     conn.query(insQuery, [req.body.mList, req.body.mPrice, req.body.sID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "saved"
+        })
+    });
+});
+
+//Register shop Extras
+router.post('/Register/Extra', (req, res, next) => {
+    const insQuery = "INSERT INTO extras(`eName`,`isActive`,`sID`) VALUES (?, 1,?)";
+
+    conn.query(insQuery, [req.body.eName, req.body.sID], (err, result, fields) => {
         console.log(err);
         console.log(result);
         res.json({
