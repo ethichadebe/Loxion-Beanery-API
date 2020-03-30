@@ -16,31 +16,34 @@ const conn = mysql.createConnection({
 
 //Returns all shops
 router.get('/', (req, res, next) => {
-    var shopDetails = [];
-    var ingredients = [];
-    var menuList = [];
-    conn.query("SELECT * FROM shops", (err, rows, fields) => {
-        shopDetails = rows;
-        for (var i = 0; i < rows.length; i++) {
-            var shop = shopDetails[i];
-            var id = shopDetails[i].sID;
-            console.log(id);
-            conn.query("SELECT * FROM menuitems WHERE sID = ?", id, (err, rows, fields) => {
-                ingredients = rows;
-                console.log(ingredients);
+    conn.query("SELECT * FROM `shops`", (err, rows, fields) => {
+       console.log(rows);
+        res.json({
+           shops:rows
+       })
+       
+    });
+});
 
-                conn.query("SELECT * FROM ingredients WHERE sID = ?", id, (err, rows, fields) => {
-                    menuList = rows
-                    console.log(menuList);
+//Returns all Menuitems for each shop
+router.get('/MenuItems/:sID', (req, res, next) => {
+    conn.query("SELECT * FROM `menuitems` WHERE sID = ?",req.params.sID, (err, rows, fields) => {
+       console.log(rows);
+        res.json({
+           menuItems:rows
+       })
+       
+    });
+});
 
-                    res.json({
-                        data : shop,
-                        ingredients: ingredients,
-                        menuList:menuList
-                    });
-                });
-            });
-        }
+//Returns all Ingredients for each shop
+router.get('/Ingredients/:sID', (req, res, next) => {
+    conn.query("SELECT * FROM `ingredients` WHERE sID = ?",req.params.sID, (err, rows, fields) => {
+       console.log(rows);
+        res.json({
+           menuItems:rows
+       })
+       
     });
 });
 
