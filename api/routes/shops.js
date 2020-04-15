@@ -14,84 +14,312 @@ const conn = mysql.createConnection({
     database: 'loxionbeanery'
 });
 
+function addZero(data) {
+    if (data.length < 2) {
+        return "0" + data;
+    }
+    return data;
+}
+
+function createdAt() {
+    var currentdate = new Date();
+    return currentdate.getFullYear() + "-"
+        + addZero("" + (currentdate.getMonth() + 1)) + "-"
+        + addZero("" + currentdate.getDate()) + " "
+        + addZero("" + currentdate.getHours()) + ":"
+        + addZero("" + currentdate.getMinutes()) + ":"
+        + addZero("" + currentdate.getSeconds());
+
+}
+
+function logOutput(err, result) {
+    if (err != null) {
+        console.log(err)
+    }
+}
+
 //Returns all shops
-router.get('/', (req, res, next) => {
-    conn.query("SELECT * FROM `shops`", (err, rows, fields) => {
-       console.log(rows);
-        res.json({
-           shops:rows
-       })
-       
+router.get('/:uID', (req, res, next) => {
+    conn.query("SELECT shops.*, (SELECT COUNT(shoplikes.sID) FROM shoplikes WHERE shoplikes.uID = ?) AS isLiked FROM shops WHERE shops.isActive = 1", [req.params.uID], (err, rows, fields) => {
+        console.log(rows);
+        if (rows.length > 0) {
+            res.json({
+                message: "shops",
+                shops: rows
+            })
+        } else {
+            res.json({
+                message: "empty"
+            })
+        }
+    });
+});
+
+//Returns all shops owned by user
+router.get('/MyShops/:uID', (req, res, next) => {
+    conn.query("SELECT shops.*, usershopbridge.uRole FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?)", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
+        console.log(rows);
+        if (rows.length > 0) {
+            res.json({
+                message: "shops",
+                shops: rows
+            })
+        } else {
+            res.json({
+                message: "empty"
+            })
+        }
     });
 });
 
 //Returns all Menuitems for each shop
 router.get('/MenuItems/:sID', (req, res, next) => {
-    conn.query("SELECT * FROM `menuitems` WHERE sID = ?",req.params.sID, (err, rows, fields) => {
-       console.log(rows);
-        res.json({
-           menuItems:rows
-       })
-       
+    conn.query("SELECT * FROM `menuitems` WHERE sID = ? ORDER BY `mPrice` ASC", req.params.sID, (err, rows, fields) => {
+        //console.log(rows);
+        //console.log(rows);
+        if (rows.length > 0) {
+            res.json({
+                message: "shops",
+                menuItems: rows
+            })
+        } else {
+            res.json({
+                message: "empty"
+            })
+        }
     });
 });
 
 //Returns all Ingredients for each shop
 router.get('/Ingredients/:sID', (req, res, next) => {
-    conn.query("SELECT * FROM `ingredients` WHERE sID = ?",req.params.sID, (err, rows, fields) => {
-       console.log(rows);
-        res.json({
-           menuItems:rows
-       })
-       
+    conn.query("SELECT * FROM `ingredients` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
+        console.log(err);
+        console.log(rows);
+        if (rows.length > 0) {
+            res.json({
+                message: "shops",
+                ingredients: rows
+            })
+        } else {
+            res.json({
+                message: "empty"
+            })
+        }
     });
 });
 
 //Register shop
 router.post('/Register', (req, res, next) => {
-    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sOperatingHrs`,`isActive`) VALUES (?, ?,?, ?,?, ?, 0.0,?,0)";
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0,0,?,0, '" + createdAt() + "')";
 
     conn.query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLocation, req.body.sOperatingHrs], (err, result, fields) => {
-        console.log(err);
-        console.log(result);
-        res.json({
-            data: result.insertId
-        })
+        //console.log(err);
+        //console.log(result);
+        var sID = result.insertId;
+        const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + createdAt() + "')";
+        conn.query(insQuery1, [req.body.uID], (err, result, fields) => {
+            //console.log(err);
+            //console.log(result);
+            res.json({
+                data: sID
+            })
+        });
     });
 });
 
 //Register shop Ingredients
 router.post('/Register/Ingredient', (req, res, next) => {
-    const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,`isActive`) VALUES (?, ?, ?, 1)";
+    const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,`isActive`,`createdAt`) VALUES (?, ?, ?, 1, '" + createdAt() + "')";
 
     conn.query(insQuery, [req.body.iName, req.body.iPrice, req.body.sID], (err, result, fields) => {
-        console.log(err);
-        console.log(result);
-        res.json({
-            data: "saved"
-        })
+        const selQuery = "SELECT * FROM `ingredients` WHERE iID = ?";
+
+        conn.query(selQuery, result.insertId, (err, result, fields) => {
+            logOutput(err, result)
+            //console.log(result);
+            res.json({
+                data: "saved",
+                response: result
+            })
+        });
     });
 });
 
 //Register shop Menu items
 router.post('/Register/MenuItem', (req, res, next) => {
-    const insQuery = "INSERT INTO menuitems(`mList`,`mPrice`,`isActive`,`sID`) VALUES (?, ?, 1, ?)";
-
+    const insQuery = "INSERT INTO `menuitems` (`mList`, `mPrice`, `isActive`, `sID`, `createdAt`) VALUES (?, ?, '0', ?, '" + createdAt() + "')";
+    const checkQuesry = "SELECT COUNT(menuitems.sID) AS nItems FROM menuitems WHERE menuitems.sID = ?";
+    const ActivateQuery = "UPDATE `shops` SET `isActive` = '1' WHERE `shops`.`sID` = ?;";
+    const selQuery = "SELECT * FROM `menuitems` WHERE mID = ?";
     conn.query(insQuery, [req.body.mList, req.body.mPrice, req.body.sID], (err, result, fields) => {
-        console.log(err);
+        logOutput(err, result);
         console.log(result);
-        res.json({
-            data: "saved"
-        })
+        var ID = result.insertId;
+        conn.query(checkQuesry, [req.body.sID], (err, result, fields) => {
+            console.log(result);
+            console.log(err);
+            console.log(result[0].nItems);
+            if (result[0].nItems == 1) {
+                conn.query(ActivateQuery, req.body.sID, (err, result, fields) => {
+                    console.log(err);
+                    console.log("isActive activated");
+                    //console.log(result);
+                    conn.query(selQuery, ID, (err, result, fields) => {
+                        console.log(err);
+                        //console.log(result);
+                        res.json({
+                            data: "saved",
+                            response: result
+                        })
+                    });
+                });
+
+            } else {
+                conn.query(selQuery, ID, (err, result, fields) => {
+                    console.log("else");
+                    console.log(err);
+                    //console.log(result);
+                    res.json({
+                        data: "saved",
+                        response: result
+                    })
+                });
+
+            }
+
+        });
     });
 });
 
 //Register shop Extras
 router.post('/Register/Extra', (req, res, next) => {
-    const insQuery = "INSERT INTO extras(`eName`,`isActive`,`sID`) VALUES (?, 1,?)";
+    const insQuery = "INSERT INTO extras(`eName`,`isActive`,`sID`,`createdAt`) VALUES (?, 1,?, '" + createdAt() + "')";
 
     conn.query(insQuery, [req.body.eName, req.body.sID], (err, result, fields) => {
+        const selQuery = "SELECT * FROM `extras` WHERE eID = ?";
+
+        conn.query(selQuery, result.insertId, (err, result, fields) => {
+            logOutput(err, result)
+            //console.log(result);
+            res.json({
+                data: "saved",
+                response: result
+            })
+        });
+    });
+});
+
+//Delete shop Ingredients
+router.delete('/Register/Ingredient/:iID', (req, res, next) => {
+    const delQuery = "DELETE FROM `ingredients` WHERE `ingredients`.`iID` = ?";
+
+    conn.query(delQuery, [req.params.iID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "removed"
+        })
+    });
+});
+
+//Delete shop Menu items
+router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
+    const delQuery = "DELETE FROM `menuitems` WHERE `menuitems`.`mID` = ?";
+    const DeactivateQuery = "UPDATE `shops` SET `isActive` = '0' WHERE `shops`.`sID` = ?;";
+    const checkQuesry = "SELECT COUNT(menuitems.sID) AS nItems FROM menuitems WHERE menuitems.sID = ?";
+
+    var sID = req.params.sID;
+    conn.query(delQuery, [req.params.mID], (err, result, fields) => {
+        console.log(result);
+        if (result == undefined) {
+            res.err("something went wrong please try again")
+        } else {
+            conn.query(checkQuesry, [sID], (err, result, fields) => {
+                console.log(result);
+                console.log(err);
+                console.log(result[0].nItems);
+                if (result[0].nItems == 0) {
+                    conn.query(DeactivateQuery, [sID], (err, result, fields) => {
+                        console.log(sID);
+                        console.log(err);
+                        console.log("isActive deactivated");
+                        //console.log(result);
+                        res.json({
+                            data: "removed",
+                            response: result
+                        })
+                    });
+
+                } else {
+                    res.json({
+                        data: "removed",
+                        response: result
+                    })
+                }
+            });
+        }
+    });
+});
+
+//Delete shop Extras
+router.delete('/Register/Extra/:eID', (req, res, next) => {
+    const delQuery = "DELETE FROM `extras` WHERE `extras`.`eID` = ?";
+
+    conn.query(delQuery, [req.body.eID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "removed"
+        })
+    });
+});
+
+//Put shop
+router.put('/Register/:sID', (req, res, next) => {
+    const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = ?, `sBigPicture` = ?, `sLocation` = ?,`sOperatingHrs` = ? WHERE sID = ?";
+
+    conn.query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
+    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLocation, req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "changed"
+        })
+    });
+});
+
+//Put shop Ingredients
+router.put('/Register/Ingredient/:iID', (req, res, next) => {
+    const putQuery = "UPDATE ingredients SET iName = ?, iPrice = ? WHERE iID = ?";
+
+    conn.query(putQuery, [req.body.iName, req.body.iPrice, req.params.iID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "changed"
+        })
+    });
+});
+
+//Put shop Menu items
+router.put('/Register/MenuItems/:mID', (req, res, next) => {
+    const putQuery = "UPDATE menuitems SET mList = ?, mPrice = ? WHERE mID = ?";
+
+    conn.query(putQuery, [req.body.mList, req.body.mPrice, req.params.mID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "changed"
+        })
+    });
+});
+
+//Put shop Extras
+router.put('/Register/Extra/:eID', (req, res, next) => {
+    const delQuery = "DELETE FROM `extras` WHERE `extras`.`eID` = ?";
+
+    conn.query(delQuery, [req.body.eID], (err, result, fields) => {
         console.log(err);
         console.log(result);
         res.json({
