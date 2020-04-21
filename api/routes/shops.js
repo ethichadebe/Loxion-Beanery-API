@@ -108,6 +108,24 @@ router.get('/Ingredients/:sID', (req, res, next) => {
     });
 });
 
+//Returns all Extras for each shop
+router.get('/Extras/:sID', (req, res, next) => {
+    conn.query("SELECT * FROM `extras` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
+        console.log(err);
+        console.log(rows);
+        if (rows.length > 0) {
+            res.json({
+                message: "shops",
+                extras: rows
+            })
+        } else {
+            res.json({
+                message: "empty"
+            })
+        }
+    });
+});
+
 //Register shop
 router.post('/Register', (req, res, next) => {
     const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0,0,?,0, '" + createdAt() + "')";
@@ -317,9 +335,9 @@ router.put('/Register/MenuItems/:mID', (req, res, next) => {
 
 //Put shop Extras
 router.put('/Register/Extra/:eID', (req, res, next) => {
-    const delQuery = "DELETE FROM `extras` WHERE `extras`.`eID` = ?";
+    const putQuery = "UPDATE extras SET eName = ? WHERE eID = ?";
 
-    conn.query(delQuery, [req.body.eID], (err, result, fields) => {
+    conn.query(putQuery, [req.body.eName, req.params.eID], (err, result, fields) => {
         console.log(err);
         console.log(result);
         res.json({
