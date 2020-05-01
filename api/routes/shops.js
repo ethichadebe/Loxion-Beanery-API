@@ -92,7 +92,7 @@ router.get('/MenuItems/:sID', (req, res, next) => {
 
 //Returns all Ingredients for each shop
 router.get('/Ingredients/:sID', (req, res, next) => {
-    conn.query("SELECT * FROM `ingredients` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
+    conn.query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID,req.params.sID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {

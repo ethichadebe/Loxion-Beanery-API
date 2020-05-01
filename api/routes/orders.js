@@ -97,7 +97,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 
 //Returns all Past orders for a specific user
 router.get('/Past/:uID', (req, res, next) => {
-    conn.query("SELECT orders.*, (SELECT shops.sName FROM shops,orders WHERE shops.sID=orders.sID LIMIT 1) AS sName FROM orders WHERE uID = 57 AND oStatus = 'Collected'", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT * FROM orders INNER JOIN shops ON orders.sID = shops.sID AND (orders.uID = 57 AND orders.oStatus = 'Collected')", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -115,7 +115,7 @@ router.get('/Past/:uID', (req, res, next) => {
 
 //Returns all Upcoming orders for a specific user
 router.get('/Upcoming/:uID', (req, res, next) => {
-    conn.query("SELECT orders.*, (SELECT shops.sName FROM shops,orders WHERE orders.sID=shops.sID LIMIT 1) AS sName FROM orders WHERE uID = ? AND oStatus != 'Colected'", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT * FROM orders INNER JOIN shops ON orders.sID = shops.sID AND (orders.uID = ? AND orders.oStatus != 'Collected')", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -133,9 +133,9 @@ router.get('/Upcoming/:uID', (req, res, next) => {
 
 //Register shop
 router.post('/Order', (req, res, next) => {
-    const insQuery = "INSERT INTO orders(`oIngredients`,`oPrice`, `sID`,`uID`,`createdAt`) VALUES (?, ?, ?, ?, '" + createdAt() + "')";
+    const insQuery = "INSERT INTO orders(`oIngredients`,`oExtras`,`oPrice`, `sID`,`uID`,`createdAt`) VALUES (?, ?, ?, ?, ?, '" + createdAt() + "')";
 
-    conn.query(insQuery, [req.body.oIngredients, req.body.oPrice, req.body.sID, req.body.uID], (err, result, fields) => {
+    conn.query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID], (err, result, fields) => {
         console.log(err);
         console.log(result.insertId);
         res.json({
