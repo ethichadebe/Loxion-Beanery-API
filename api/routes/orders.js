@@ -97,7 +97,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 
 //Returns all Past orders for a specific user
 router.get('/Past/:uID', (req, res, next) => {
-    conn.query("SELECT * FROM orders INNER JOIN shops ON orders.sID = shops.sID AND (orders.uID = 57 AND orders.oStatus = 'Collected')", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT * FROM orders INNER JOIN shops ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled'))", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -115,7 +115,7 @@ router.get('/Past/:uID', (req, res, next) => {
 
 //Returns all Upcoming orders for a specific user
 router.get('/Upcoming/:uID', (req, res, next) => {
-    conn.query("SELECT * FROM orders INNER JOIN shops ON orders.sID = shops.sID AND (orders.uID = ? AND orders.oStatus != 'Collected')", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT * FROM orders INNER JOIN shops ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus != 'Collected' OR orders.oStatus != 'Cancelled'))", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -172,7 +172,7 @@ router.put('/Ready/:oID', (req, res, next) => {
 
 //Cancel order
 router.put('/Cancel/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oColectedAt = '" + createdAt() + "', oStatus = 'Canceled' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oColectedAt = '" + createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);

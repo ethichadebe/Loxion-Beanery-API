@@ -40,7 +40,7 @@ function logOutput(err, result) {
 
 //Returns all shops
 router.get('/:uID', (req, res, next) => {
-    conn.query("SELECT shops.*, (SELECT COUNT(shoplikes.sID) FROM shoplikes WHERE shoplikes.uID = ?) AS isLiked FROM shops WHERE shops.isActive = 1", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked FROM shops WHERE shops.isActive = 1", [req.params.uID], (err, rows, fields) => {
         console.log(rows);
         if (rows.length > 0) {
             res.json({
@@ -57,7 +57,7 @@ router.get('/:uID', (req, res, next) => {
 
 //Returns all shops owned by user
 router.get('/MyShops/:uID', (req, res, next) => {
-    conn.query("SELECT shops.*, usershopbridge.uRole FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?)", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
+    conn.query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?)", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
         console.log(rows);
         if (rows.length > 0) {
             res.json({
@@ -92,7 +92,7 @@ router.get('/MenuItems/:sID', (req, res, next) => {
 
 //Returns all Ingredients for each shop
 router.get('/Ingredients/:sID', (req, res, next) => {
-    conn.query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID,req.params.sID], (err, rows, fields) => {
+    conn.query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID, req.params.sID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -128,11 +128,12 @@ router.get('/Extras/:sID', (req, res, next) => {
 
 //Register shop
 router.post('/Register', (req, res, next) => {
-    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0,0,?,0, '" + createdAt() + "')";
+
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0,'Closed',0,?,0, '" + createdAt() + "')";
 
     conn.query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLocation, req.body.sOperatingHrs], (err, result, fields) => {
-        //console.log(err);
+        console.log(err);
         //console.log(result);
         var sID = result.insertId;
         const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + createdAt() + "')";
@@ -152,6 +153,7 @@ router.post('/Register/Ingredient', (req, res, next) => {
 
     conn.query(insQuery, [req.body.iName, req.body.iPrice, req.body.sID], (err, result, fields) => {
         const selQuery = "SELECT * FROM `ingredients` WHERE iID = ?";
+        console.log(req.body.iPrice);
 
         conn.query(selQuery, result.insertId, (err, result, fields) => {
             logOutput(err, result)
@@ -338,6 +340,19 @@ router.put('/Register/Extra/:eID', (req, res, next) => {
     const putQuery = "UPDATE extras SET eName = ? WHERE eID = ?";
 
     conn.query(putQuery, [req.body.eName, req.params.eID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "saved"
+        })
+    });
+});
+
+//Put shop Extras
+router.put('/Status/:sID', (req, res, next) => {
+    const putQuery = "UPDATE shops SET sStatus = ? WHERE sID = ?";
+
+    conn.query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
         console.log(err);
         console.log(result);
         res.json({
