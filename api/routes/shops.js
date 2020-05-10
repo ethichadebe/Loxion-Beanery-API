@@ -3,6 +3,18 @@ const app = express();
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const router = express.Router();
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, './uploads');
+    },
+
+    filename: function(req, file, cb){
+        cb(null, File.originalname);
+
+    }    
+})
+const upload = multer({ dest: '/uploads/' });
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -40,7 +52,7 @@ function logOutput(err, result) {
 
 //Returns all shops
 router.get('/:uID', (req, res, next) => {
-    conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked FROM shops WHERE shops.isActive = 1", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {
         console.log(rows);
         if (rows.length > 0) {
             res.json({
@@ -57,7 +69,7 @@ router.get('/:uID', (req, res, next) => {
 
 //Returns all shops owned by user
 router.get('/MyShops/:uID', (req, res, next) => {
-    conn.query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?)", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
+    conn.query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
         console.log(rows);
         if (rows.length > 0) {
             res.json({
@@ -111,8 +123,8 @@ router.get('/Ingredients/:sID', (req, res, next) => {
 //Returns all Extras for each shop
 router.get('/Extras/:sID', (req, res, next) => {
     conn.query("SELECT * FROM `extras` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
-        console.log(err);
-        console.log(rows);
+        //console.log(err);
+        //  console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "shops",
@@ -127,9 +139,9 @@ router.get('/Extras/:sID', (req, res, next) => {
 });
 
 //Register shop
-router.post('/Register', (req, res, next) => {
-
-    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0,'Closed',0,?,0, '" + createdAt() + "')";
+router.post('/Register', upload.single('sSmallPicture'), (req, res, next) => {
+    console.log(req.file);
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0, 0,0,?,0, '" + createdAt() + "')";
 
     conn.query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLocation, req.body.sOperatingHrs], (err, result, fields) => {
@@ -348,7 +360,7 @@ router.put('/Register/Extra/:eID', (req, res, next) => {
     });
 });
 
-//Put shop Extras
+//Put shop Status
 router.put('/Status/:sID', (req, res, next) => {
     const putQuery = "UPDATE shops SET sStatus = ? WHERE sID = ?";
 

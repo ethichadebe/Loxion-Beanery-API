@@ -19,6 +19,21 @@ router.get('/', (req, res, next) => {
     });
 });
 
+//Change Password
+router.get('/CheckPassword/:uID/:uPassword', (req, res, next) => {
+    conn.query("SELECT * FROM users WHERE uID=? AND uPassword=?",[req.params.uID, req.params.uPassword], (err, rows, fields) => {
+        if (rows.length > 0) {
+            res.json({
+                message:"true",
+            })
+        } else {
+            res.json({
+                message: "false"
+            })
+        }
+    });
+});
+
 //Returns a specific user 
 router.post('/Login', (req, res) => {
     const selectQuery = "SELECT * FROM `users` WHERE (`uNumber` = ? AND `uPassword` = ?)";
@@ -159,6 +174,28 @@ router.put('/EditProfile', (req, res, next) => {
         //console.log(err);
         const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
         var uID = req.body.uID;
+        console.log(uID);
+        conn.query(selectQuery, [uID], (err, result, fields) => {
+            console.log(err);
+            console.log(result);
+            res.json({
+                data: "saved",
+                response: result
+            })
+        });
+    });
+
+});
+
+//Update user information
+router.put('/ChangePassword/:uID', (req, res, next) => {
+    const updateQuery = "UPDATE users SET uPassword = ? WHERE uID = ?";
+
+    //Check if number and email exists then register 
+    conn.query(updateQuery, [req.body.uPassword, req.params.uID], (err, result, fields) => {
+        //console.log(err);
+        const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
+        var uID = req.params.uID;
         console.log(uID);
         conn.query(selectQuery, [uID], (err, result, fields) => {
             console.log(err);

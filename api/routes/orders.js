@@ -97,7 +97,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 
 //Returns all Past orders for a specific user
 router.get('/Past/:uID', (req, res, next) => {
-    conn.query("SELECT * FROM orders INNER JOIN shops ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled'))", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled'))", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -115,7 +115,7 @@ router.get('/Past/:uID', (req, res, next) => {
 
 //Returns all Upcoming orders for a specific user
 router.get('/Upcoming/:uID', (req, res, next) => {
-    conn.query("SELECT * FROM orders INNER JOIN shops ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus != 'Collected' OR orders.oStatus != 'Cancelled'))", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled')", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -192,6 +192,19 @@ router.put('/Collected/:oID', (req, res, next) => {
         console.log(result);
         res. json({
             data: "Canceled"
+        })
+    });
+});
+
+//Rate order
+router.put('/Rate/:oID', (req, res, next) => {
+    const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ?, oColectedAt = '" + createdAt() + "' WHERE oID = ?";
+
+    conn.query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res. json({
+            data: "saved"
         })
     });
 });
