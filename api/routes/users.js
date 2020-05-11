@@ -38,7 +38,7 @@ router.get('/CheckPassword/:uID/:uPassword', (req, res, next) => {
 router.post('/Login', (req, res) => {
     const selectQuery = "SELECT * FROM `users` WHERE (`uNumber` = ? AND `uPassword` = ?)";
     conn.query(selectQuery, [req.body.uNumber, req.body.uPassword], (err, result, fields) => {
-        //console.log(result)
+        console.log(result)
         if (result.length > 0) {
             res.json({
                 data: result
