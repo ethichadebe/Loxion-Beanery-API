@@ -7,6 +7,7 @@ const router = express.Router();
 const conn = mysql.createConnection({
     host: 'sql205.epizy.com',
     user: 'epiz_24959421',
+    password:'rFPpERvM61L',
     database: 'epiz_24959421_loxionbeanery'
 });
 
