@@ -5,7 +5,5 @@ const port = process.env.PORT || 3005;
 const server = http.createServer(app);
 
 server.listen(port, () => {
-    app.get('/', (req, res, next) => {
-        res.send("test");
-    });
-    });    
+    console.log("server started");
+});    
