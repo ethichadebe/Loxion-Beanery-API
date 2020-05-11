@@ -5,9 +5,10 @@ const router = express.Router();
 
 //Database connection
 const conn = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'loxionbeanery'
+    host: 'sql205.epizy.com',
+    user: 'epiz_24959421',
+    password: 'rFPpERvM61L',
+    database: 'epiz_24959421_loxionbeanery'
 });
 
 //Returns all users
