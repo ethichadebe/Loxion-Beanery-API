@@ -97,7 +97,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 
 //Returns all Past orders for a specific user
 router.get('/Past/:uID', (req, res, next) => {
-    conn.query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled'))", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = 57 AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -115,7 +115,7 @@ router.get('/Past/:uID', (req, res, next) => {
 
 //Returns all Upcoming orders for a specific user
 router.get('/Upcoming/:uID', (req, res, next) => {
-    conn.query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled')", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.createdAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -131,7 +131,7 @@ router.get('/Upcoming/:uID', (req, res, next) => {
     });
 });
 
-//Register shop
+//Place ordere
 router.post('/Order', (req, res, next) => {
     const insQuery = "INSERT INTO orders(`oIngredients`,`oExtras`,`oPrice`, `sID`,`uID`,`createdAt`) VALUES (?, ?, ?, ?, ?, '" + createdAt() + "')";
 

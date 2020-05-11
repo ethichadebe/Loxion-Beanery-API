@@ -40,10 +40,12 @@ router.post('/', (req, res, next) => {
     conn.query(insQuery, [req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         if (err == null) {
             var sID = req.body.sID;
-            const upQuery = "UPDATE shops SET shops.sLikes = (SELECT COUNT(shoplikes.sID) FROM shoplikes WHERE shoplikes.sID = ?) WHERE shops.sID=?;";
+            const upQuery = "UPDATE shops SET shops.sLikes = (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.sID = ?) WHERE shops.sID=?;";
+            //console.log(err);
+            //console.log(result);
             conn.query(upQuery, [sID, sID], (err, result, fields) => {
                 console.log(err);
-                //console.log(result);
+                console.log(result);
                 conn.query("SELECT COUNT(*) AS sLikes FROM `shoplikes` WHERE sID = ?", [sID], (err, rows, fields) => {
                     console.log(err);
                     console.log(rows[0].sLikes);
@@ -65,14 +67,16 @@ router.delete('/:uID/:sID', (req, res, next) => {
 
     conn.query(delQuery, [req.params.sID, req.params.uID, req.params.sID], (err, result, fields) => {
         if (err == null) {
-            var sID = req.body.sID;
-            const upQuery = "UPDATE shops SET shops.sLikes = (SELECT COUNT(shoplikes.sID) FROM shoplikes WHERE shoplikes.sID = ?) WHERE shops.sID=?;";
+            var sID = req.params.sID;
+            const upQuery = "UPDATE shops SET shops.sLikes = (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.sID = ?) WHERE shops.sID=?;";
+            //console.log(err);
+            //console.log(result);
             conn.query(upQuery, [sID, sID], (err, result, fields) => {
                 console.log(err);
-                //console.log(result);
+                console.log(result);
                 conn.query("SELECT COUNT(*) AS sLikes FROM `shoplikes` WHERE sID = ?", [sID], (err, rows, fields) => {
                     console.log(err);
-                    console.log(rows);
+                    console.log(rows[0].sLikes);
                     res.json({
                         message: "removed",
                         likes: rows[0].sLikes

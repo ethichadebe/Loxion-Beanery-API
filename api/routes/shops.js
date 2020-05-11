@@ -69,7 +69,7 @@ router.get('/:uID', (req, res, next) => {
 
 //Returns all shops owned by user
 router.get('/MyShops/:uID', (req, res, next) => {
-    conn.query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
+    conn.query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) AND (shops.isActive != 2) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
         console.log(rows);
         if (rows.length > 0) {
             res.json({
@@ -140,6 +140,7 @@ router.get('/Extras/:sID', (req, res, next) => {
 
 //Register shop
 router.post('/Register', upload.single('sSmallPicture'), (req, res, next) => {
+
     console.log(req.file);
     const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0, 0,0,?,0, '" + createdAt() + "')";
 
@@ -369,6 +370,19 @@ router.put('/Status/:sID', (req, res, next) => {
         console.log(result);
         res.json({
             data: "saved"
+        })
+    });
+});
+
+//Deactivate Shop
+router.put('/deactivate/:sID', (req, res, next) => {
+    const putQuery = "UPDATE shops SET isActive = 2 WHERE sID = ?";
+
+    conn.query(putQuery, [req.params.sID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
+        res.json({
+            data: "deactivated"
         })
     });
 });
