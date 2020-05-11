@@ -3,18 +3,6 @@ const app = express();
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const router = express.Router();
-const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, './uploads');
-    },
-
-    filename: function(req, file, cb){
-        cb(null, File.originalname);
-
-    }    
-})
-const upload = multer({ dest: '/uploads/' });
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -139,9 +127,7 @@ router.get('/Extras/:sID', (req, res, next) => {
 });
 
 //Register shop
-router.post('/Register', upload.single('sSmallPicture'), (req, res, next) => {
-
-    console.log(req.file);
+router.post('/Register', (req, res, next) => {
     const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0, 0,0,?,0, '" + createdAt() + "')";
 
     conn.query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
