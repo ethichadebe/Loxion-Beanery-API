@@ -40,7 +40,8 @@ const conn = mysql.createConnection({
 //Returns all orders
 router.get('/', (req, res, next) => {
     conn.query("SELECT * FROM `orders`", (err, rows, fields) => {
-        console.log(rows);
+        console.log(err);
+        //console.log(rows);
         res.json({
             shops: rows
         })
@@ -52,7 +53,7 @@ router.get('/', (req, res, next) => {
 router.get('/:sID', (req, res, next) => {
     conn.query("SELECT * FROM orders WHERE sID = ? AND (orders.oStatus = 'Waiting for order' OR orders.oStatus = 'Ready for collection')", req.params.sID, (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+        //console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -69,7 +70,8 @@ router.get('/:sID', (req, res, next) => {
 //Returns all passed orders for a specific shop
 router.get('/shopPast/:sID', (req, res, next) => {
     conn.query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {
-        console.log(rows);
+        console.log(err);
+//        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -85,7 +87,8 @@ router.get('/shopPast/:sID', (req, res, next) => {
 //Returns all upcoming orders for a specific shop
 router.get('/shopUpcoming/:sID', (req, res, next) => {
     conn.query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =?)", [req.params.sID], (err, rows, fields) => {
-        console.log(rows);
+        console.log(err);
+//        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -102,7 +105,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 router.get('/Past/:uID', (req, res, next) => {
     conn.query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = 57 AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+        //console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message:"orders",
@@ -120,7 +123,7 @@ router.get('/Past/:uID', (req, res, next) => {
 router.get('/Upcoming/:uID', (req, res, next) => {
     conn.query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.createdAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+        //console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message:"orders",
@@ -153,7 +156,7 @@ router.put('/Arrived/:oID', (req, res, next) => {
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+        //console.log(result);
         res.json({
             data: "updated"
         })
@@ -166,7 +169,7 @@ router.put('/Ready/:oID', (req, res, next) => {
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+       // console.log(result);
         res.json({
             data: "updated"
         })
@@ -179,7 +182,7 @@ router.put('/Cancel/:oID', (req, res, next) => {
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+        //console.log(result);
         res.json({
             data: "Canceled"
         })
@@ -192,7 +195,7 @@ router.put('/Collected/:oID', (req, res, next) => {
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+       // console.log(result);
         res. json({
             data: "Canceled"
         })
@@ -205,7 +208,7 @@ router.put('/Rate/:oID', (req, res, next) => {
 
     conn.query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+        //console.log(result);
         res. json({
             data: "saved"
         })

@@ -14,7 +14,7 @@ const conn = mysql.createConnection({
 
 //Returns all users
 router.get('/', (req, res, next) => {
-    console.log(conn);
+    //console.log(conn);
     conn.query("SELECT * FROM users", (err, result, fields) => {
         res.json({
             users: result
@@ -41,7 +41,8 @@ router.get('/CheckPassword/:uID/:uPassword', (req, res, next) => {
 router.post('/Login', (req, res) => {
     const selectQuery = "SELECT * FROM `users` WHERE (`uNumber` = ? AND `uPassword` = ?)";
     conn.query(selectQuery, [req.body.uNumber, req.body.uPassword], (err, result, fields) => {
-        console.log(result)
+        console.log(err)
+//        console.log(result)
         if (result.length > 0) {
             res.json({
                 data: result
@@ -64,7 +65,8 @@ router.post('/Register', (req, res) => {
     //Check if number and email exists then register 
     conn.query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
         if (result.length > 0) {
-            console.log(result);
+            console.log(err);
+           // console.log(result);
             res.json({
                 data: "both"
             });
@@ -85,7 +87,7 @@ router.post('/Register', (req, res) => {
                         } else {
                             conn.query(insQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uEmail,
                             req.body.uNumber, req.body.uPassword], (err, result, fields) => {
-                                //console.log(err);
+                                console.log(err);
                                 console.log(result.insertId);
                                 res.json({
                                     data: "Registered"
@@ -109,7 +111,7 @@ router.put('/EditNumber', (req, res, next) => {
     var number = req.body.uNumber;
     var uID = req.body.uID;
     conn.query(selectQuery, [number], (err, result, fields) => {
-        //console.log(err);
+        console.log(err);
         //console.log(result);
         if (result.length > 0) {
             res.json({
@@ -118,11 +120,12 @@ router.put('/EditNumber', (req, res, next) => {
         } else {
             conn.query(updateQuery, [number, uID], (err, result, fields) => {
                 console.log(uID);
-                console.log(result);
+                console.log(err);
+                //console.log(result);
                 const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
                 console.log(uID);
                 conn.query(selectQuery, [uID], (err, result, fields) => {
-                    //console.log(err);
+                    console.log(err);
                    // console.log(result);
                     res.json({
                         data: "saved",
@@ -143,7 +146,7 @@ router.put('/EditEmail', (req, res, next) => {
     var email = req.body.uEmail;
     var uID = req.body.uID;
     conn.query(selectQuery, [email], (err, result, fields) => {
-        //console.log(err);
+        console.log(err);
         //console.log(result);
         if (result.length > 0) {
             res.json({
@@ -152,11 +155,12 @@ router.put('/EditEmail', (req, res, next) => {
         } else {
             conn.query(updateQuery, [email, uID], (err, result, fields) => {
                 console.log(uID);
-                console.log(result);
+                console.log(err);
+                //console.log(result);
                 const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
                 console.log(uID);
                 conn.query(selectQuery, [uID], (err, result, fields) => {
-                    //console.log(err);
+                console.log(err);
                    // console.log(result);
                     res.json({
                         data: "saved",
@@ -180,7 +184,7 @@ router.put('/EditProfile', (req, res, next) => {
         console.log(uID);
         conn.query(selectQuery, [uID], (err, result, fields) => {
             console.log(err);
-            console.log(result);
+            //console.log(result);
             res.json({
                 data: "saved",
                 response: result
@@ -202,7 +206,7 @@ router.put('/ChangePassword/:uID', (req, res, next) => {
         console.log(uID);
         conn.query(selectQuery, [uID], (err, result, fields) => {
             console.log(err);
-            console.log(result);
+            //console.log(result);
             res.json({
                 data: "saved",
                 response: result

@@ -44,7 +44,8 @@ function logOutput(err, result) {
 //Returns all shops
 router.get('/:uID', (req, res, next) => {
     conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {
-        console.log(rows);
+        console.log(err);
+//        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "shops",
@@ -61,7 +62,8 @@ router.get('/:uID', (req, res, next) => {
 //Returns all shops owned by user
 router.get('/MyShops/:uID', (req, res, next) => {
     conn.query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) AND (shops.isActive != 2) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
-        console.log(rows);
+    console.log(err);
+//    console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "shops",
@@ -78,7 +80,7 @@ router.get('/MyShops/:uID', (req, res, next) => {
 //Returns all Menuitems for each shop
 router.get('/MenuItems/:sID', (req, res, next) => {
     conn.query("SELECT * FROM `menuitems` WHERE sID = ? ORDER BY `mPrice` ASC", req.params.sID, (err, rows, fields) => {
-        //console.log(rows);
+        console.log(err);
         //console.log(rows);
         if (rows.length > 0) {
             res.json({
@@ -97,7 +99,7 @@ router.get('/MenuItems/:sID', (req, res, next) => {
 router.get('/Ingredients/:sID', (req, res, next) => {
     conn.query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID, req.params.sID], (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+       // console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "shops",
@@ -114,7 +116,7 @@ router.get('/Ingredients/:sID', (req, res, next) => {
 //Returns all Extras for each shop
 router.get('/Extras/:sID', (req, res, next) => {
     conn.query("SELECT * FROM `extras` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
-        //console.log(err);
+        console.log(err);
         //  console.log(rows);
         if (rows.length > 0) {
             res.json({
@@ -140,7 +142,7 @@ router.post('/Register', (req, res, next) => {
         var sID = result.insertId;
         const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + createdAt() + "')";
         conn.query(insQuery1, [req.body.uID], (err, result, fields) => {
-            //console.log(err);
+            console.log(err);
             //console.log(result);
             res.json({
                 data: sID
@@ -158,7 +160,7 @@ router.post('/Register/Ingredient', (req, res, next) => {
         console.log(req.body.iPrice);
 
         conn.query(selQuery, result.insertId, (err, result, fields) => {
-            logOutput(err, result)
+            console.log(err);
             //console.log(result);
             res.json({
                 data: "saved",
@@ -175,11 +177,11 @@ router.post('/Register/MenuItem', (req, res, next) => {
     const ActivateQuery = "UPDATE `shops` SET `isActive` = '1' WHERE `shops`.`sID` = ?;";
     const selQuery = "SELECT * FROM `menuitems` WHERE mID = ?";
     conn.query(insQuery, [req.body.mList, req.body.mPrice, req.body.sID], (err, result, fields) => {
-        logOutput(err, result);
-        console.log(result);
+        console.log(err);
+//        console.log(result);
         var ID = result.insertId;
         conn.query(checkQuesry, [req.body.sID], (err, result, fields) => {
-            console.log(result);
+//            console.log(result);
             console.log(err);
             console.log(result[0].nItems);
             if (result[0].nItems == 1) {
@@ -222,7 +224,7 @@ router.post('/Register/Extra', (req, res, next) => {
         const selQuery = "SELECT * FROM `extras` WHERE eID = ?";
 
         conn.query(selQuery, result.insertId, (err, result, fields) => {
-            logOutput(err, result)
+            console.log(err);
             //console.log(result);
             res.json({
                 data: "saved",
@@ -238,7 +240,7 @@ router.delete('/Register/Ingredient/:iID', (req, res, next) => {
 
     conn.query(delQuery, [req.params.iID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+        //console.log(result);
         res.json({
             data: "removed"
         })
@@ -253,12 +255,13 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
 
     var sID = req.params.sID;
     conn.query(delQuery, [req.params.mID], (err, result, fields) => {
-        console.log(result);
+        console.log(err);
+//        console.log(result);
         if (result == undefined) {
             res.err("something went wrong please try again")
         } else {
             conn.query(checkQuesry, [sID], (err, result, fields) => {
-                console.log(result);
+             //   console.log(result);
                 console.log(err);
                 console.log(result[0].nItems);
                 if (result[0].nItems == 0) {
@@ -290,7 +293,7 @@ router.delete('/Register/Extra/:eID', (req, res, next) => {
 
     conn.query(delQuery, [req.body.eID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+      //  console.log(result);
         res.json({
             data: "removed"
         })
@@ -304,7 +307,7 @@ router.put('/Register/:sID', (req, res, next) => {
     conn.query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLocation, req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+        //console.log(result);
         res.json({
             data: "changed"
         })
@@ -317,7 +320,7 @@ router.put('/Register/Ingredient/:iID', (req, res, next) => {
 
     conn.query(putQuery, [req.body.iName, req.body.iPrice, req.params.iID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+        //console.log(result);
         res.json({
             data: "changed"
         })
@@ -330,7 +333,7 @@ router.put('/Register/MenuItems/:mID', (req, res, next) => {
 
     conn.query(putQuery, [req.body.mList, req.body.mPrice, req.params.mID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+       // console.log(result);
         res.json({
             data: "changed"
         })
@@ -343,7 +346,7 @@ router.put('/Register/Extra/:eID', (req, res, next) => {
 
     conn.query(putQuery, [req.body.eName, req.params.eID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+       // console.log(result);
         res.json({
             data: "saved"
         })
@@ -356,7 +359,7 @@ router.put('/Status/:sID', (req, res, next) => {
 
     conn.query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+        //console.log(result);
         res.json({
             data: "saved"
         })
@@ -369,7 +372,7 @@ router.put('/deactivate/:sID', (req, res, next) => {
 
     conn.query(putQuery, [req.params.sID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
+       // console.log(result);
         res.json({
             data: "deactivated"
         })
