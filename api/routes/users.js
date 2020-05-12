@@ -14,6 +14,7 @@ const conn = mysql.createConnection({
 
 //Returns all users
 router.get('/', (req, res, next) => {
+    console.log(conn);
     conn.query("SELECT * FROM users", (err, result, fields) => {
         res.json({
             users: result
