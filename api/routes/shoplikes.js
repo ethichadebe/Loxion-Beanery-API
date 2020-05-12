@@ -29,10 +29,13 @@ function createdAt() {
 
 //Database connection
 const conn = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'loxionbeanery'
+    host: 'sql7.freesqldatabase.com',
+    user: 'sql7339875',
+    password: 'tcyCE9lpMR',
+    database: 'sql7339875',
+    port: '3306'
 });
+
 
 router.post('/', (req, res, next) => {
     const insQuery = "INSERT INTO shoplikes(sID, uID) VALUES (?,?);";

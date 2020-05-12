@@ -29,10 +29,13 @@ function createdAt() {
 
 //Database connection
 const conn = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'loxionbeanery'
+    host: 'sql7.freesqldatabase.com',
+    user: 'sql7339875',
+    password: 'tcyCE9lpMR',
+    database: 'sql7339875',
+    port: '3306'
 });
+
 
 //Returns all orders
 router.get('/', (req, res, next) => {
