@@ -43,7 +43,7 @@ function logOutput(err, result) {
 
 //Returns all shops
 router.get('/:uID', (req, res, next) => {
-    conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {
+    conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT SQRT(((shops.sLatitude ?)*(shops.sLatitude - ?)) + ((shops.sLongitude - ?)*(shops.sLongitude - ?)))) AS distance FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC, distance ASC", [req.params.uID, req.params.sLat, req.params.sLat, req.params.sLong, req.params.sLong], (err, rows, fields) => {
         console.log(err);
 //        console.log(rows);
         if (rows.length > 0) {
