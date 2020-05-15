@@ -42,8 +42,8 @@ function logOutput(err, result) {
 }
 
 //Returns all shops
-router.get('/:uID', (req, res, next) => {
-    conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT SQRT(((shops.sLatitude ?)*(shops.sLatitude - ?)) + ((shops.sLongitude - ?)*(shops.sLongitude - ?)))) AS distance FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC, distance ASC", [req.params.uID, req.params.sLat, req.params.sLat, req.params.sLong, req.params.sLong], (err, rows, fields) => {
+router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
+    conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT SQRT(((shops.sLatitude ?)*(shops.sLatitude - ?)) + ((shops.sLongitude - ?)*(shops.sLongitude - ?)))) AS distance FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC, distance ASC", [req.params.uID, req.params.sLatitude, req.params.sLatitude, req.params.sLongitude, req.params.sLongitude], (err, rows, fields) => {
         console.log(err);
 //        console.log(rows);
         if (rows.length > 0) {
@@ -133,10 +133,10 @@ router.get('/Extras/:sID', (req, res, next) => {
 
 //Register shop
 router.post('/Register', (req, res, next) => {
-    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLocation`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?,?, ?, 0.0, 0,0,?,0, '" + createdAt() + "')";
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?, ?, ?, ?, 0.0, 0,0,?,0, '" + createdAt() + "')";
 
     conn.query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
-    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLocation, req.body.sOperatingHrs], (err, result, fields) => {
+    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         var sID = result.insertId;
