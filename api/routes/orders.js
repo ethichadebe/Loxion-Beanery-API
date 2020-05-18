@@ -67,6 +67,24 @@ router.get('/:sID', (req, res, next) => {
     });
 });
 
+//Returns all past orders for a specific shop
+router.get('/Past/:sID', (req, res, next) => {
+    conn.query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Cancelled'", req.params.sID, (err, rows, fields) => {
+        console.log(err);
+        //console.log(rows);
+        if (rows.length > 0) {
+            res.json({
+                message: "orders",
+                orders: rows
+            })
+        } else {
+            res.json({
+                message: "empty"
+            })
+        }
+    });
+});
+
 //Returns all passed orders for a specific shop
 router.get('/shopPast/:sID', (req, res, next) => {
     conn.query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {

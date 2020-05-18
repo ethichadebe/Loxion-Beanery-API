@@ -45,7 +45,7 @@ function logOutput(err, result) {
 router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
     conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(shops.sLatitude)) * COS(RADIANS(?)) * COS(RADIANS(shops.sLongitude - ?)) + SIN(RADIANS(shops.sLatitude)) * SIN(RADIANS(?)))))) AS distance FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC, distance ASC", [req.params.uID, req.params.sLatitude, req.params.sLongitude, req.params.sLatitude], (err, rows, fields) => {
         console.log(err);
-//        console.log(rows);
+        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "shops",
@@ -63,7 +63,7 @@ router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
 router.get('/MyShops/:uID', (req, res, next) => {
     conn.query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) AND (shops.isActive != 2) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
     console.log(err);
-//    console.log(rows);
+    console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "shops",
