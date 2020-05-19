@@ -71,7 +71,7 @@ router.get('/:sID', (req, res, next) => {
 router.get('/AdminPastOrders/:sID', (req, res, next) => {
     conn.query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Cancelled'", req.params.sID, (err, rows, fields) => {
         console.log(err);
-        //console.log(rows);
+        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -123,7 +123,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 router.get('/Past/:uID', (req, res, next) => {
     conn.query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = 57 AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-        //console.log(rows);
+        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message:"orders",
