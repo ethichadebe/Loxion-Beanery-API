@@ -69,7 +69,7 @@ router.get('/:sID', (req, res, next) => {
 
 //Returns all past orders for a specific shop
 router.get('/AdminPastOrders/:sID', (req, res, next) => {
-    conn.query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Cancelled'", req.params.sID, (err, rows, fields) => {
+    conn.query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Collected'", req.params.sID, (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
