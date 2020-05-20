@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const router = express.Router();
 
-import * as helperMethods from '/util/util.js';
+const helperMethods = require('util');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
