@@ -4,6 +4,7 @@ const router = express.Router();
 
 const helperMethods = require('../../util/util');
 
+
 //Returns all users
 router.get('/', (req, res, next) => {
     //console.log(helperMethods.conn);
