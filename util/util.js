@@ -15,6 +15,7 @@ function addZero(data) {
     return data;
 }
 
+
 module.exports = {
     //Current date time generator
     createdAt: function () {
