@@ -1,41 +1,11 @@
 const express = require('express');
 const app = express();
-const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const router = express.Router();
 
+import * as helperMethods from '/util/util.js';
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
-//add zero to signle digit date and times
-function addZero(data) {
-    if (data.length < 2) {
-        return "0" + data;
-    }
-    return data;
-}
-
-//Current date time generator
-function createdAt() {
-    var currentdate = new Date();
-    return currentdate.getFullYear() + "-"
-        + addZero("" + (currentdate.getMonth() + 1)) + "-"
-        + addZero("" + currentdate.getDate()) + " "
-        + addZero("" + currentdate.getHours()) + ":"
-        + addZero("" + currentdate.getMinutes()) + ":"
-        + addZero("" + currentdate.getSeconds());
-
-}
-
-//Database connection
-const conn = mysql.createConnection({
-    host: 'sql7.freesqldatabase.com',
-    user: 'sql7339875',
-    password: 'tcyCE9lpMR',
-    database: 'sql7339875',
-    port: '3306'
-});
-
 
 //Returns all orders
 router.get('/', (req, res, next) => {
@@ -157,7 +127,7 @@ router.get('/Upcoming/:uID', (req, res, next) => {
 
 //Place ordere
 router.post('/Order', (req, res, next) => {
-    const insQuery = "INSERT INTO orders(`oIngredients`,`oExtras`,`oPrice`, `sID`,`uID`,`createdAt`) VALUES (?, ?, ?, ?, ?, '" + createdAt() + "')";
+    const insQuery = "INSERT INTO orders(`oIngredients`,`oExtras`,`oPrice`, `sID`,`uID`,`createdAt`) VALUES (?, ?, ?, ?, ?, '" + helperMethods.createdAt() + "')";
 
     conn.query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID], (err, result, fields) => {
         console.log(err);
@@ -170,7 +140,7 @@ router.post('/Order', (req, res, next) => {
 
 //Send order to shop
 router.put('/Arrived/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oRecievedAt = '" + createdAt() + "', oStatus = 'Waiting for order' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oRecievedAt = '" + helperMethods.createdAt() + "', oStatus = 'Waiting for order' WHERE oID = ?";
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
@@ -183,7 +153,7 @@ router.put('/Arrived/:oID', (req, res, next) => {
 
 //Order Complete to shop
 router.put('/Ready/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oFinishedAt = '" + createdAt() + "', oStatus = 'Ready for collection' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oFinishedAt = '" + helperMethods.createdAt() + "', oStatus = 'Ready for collection' WHERE oID = ?";
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
@@ -196,7 +166,7 @@ router.put('/Ready/:oID', (req, res, next) => {
 
 //Cancel order
 router.put('/Cancel/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oColectedAt = '" + createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
@@ -209,7 +179,7 @@ router.put('/Cancel/:oID', (req, res, next) => {
 
 //Collected order
 router.put('/Collected/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oColectedAt = '" + createdAt() + "', oStatus = 'Collected' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Collected' WHERE oID = ?";
 
     conn.query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
@@ -222,7 +192,7 @@ router.put('/Collected/:oID', (req, res, next) => {
 
 //Rate order
 router.put('/Rate/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ?, oColectedAt = '" + createdAt() + "' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ?, oColectedAt = '" + helperMethods.createdAt() + "' WHERE oID = ?";
 
     conn.query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
         console.log(err);
