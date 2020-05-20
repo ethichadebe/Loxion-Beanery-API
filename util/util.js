@@ -3,7 +3,7 @@
 const mysql = require('mysql');
 
 //Database connection
-export const conn = mysql.createConnection({
+const conn = mysql.createConnection({
     host: 'sql7.freesqldatabase.com',
     user: 'sql7339875',
     password: 'tcyCE9lpMR',
@@ -12,7 +12,7 @@ export const conn = mysql.createConnection({
 });
 
 //add zero to signle digit date and times
-export function addZero(data) {
+function addZero(data) {
     if (data.length < 2) {
         return "0" + data;
     }
@@ -20,7 +20,7 @@ export function addZero(data) {
 }
 
 //Current date time generator
-export function createdAt() {
+function createdAt() {
     var currentdate = new Date();
     return currentdate.getFullYear() + "-"
         + addZero("" + (currentdate.getMonth() + 1)) + "-"

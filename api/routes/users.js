@@ -2,8 +2,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 
-import * as helperMethods from '/util/util.js';
-
+const helperMethods = require('/util/util.js');
 //Returns all users
 router.get('/', (req, res, next) => {
     //console.log(helperMethods.conn);
