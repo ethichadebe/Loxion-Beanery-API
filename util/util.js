@@ -5,7 +5,7 @@ const conn = mysql.createConnection({
     user: 'epiz_24959421',
     password: 'rFPpERvM61L',
     database: 'epiz_24959421_loxionbeanery',
-    port: '3306'
+    port: '80'
 });
 
 //add zero to signle digit date and times
