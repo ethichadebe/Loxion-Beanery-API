@@ -1,11 +1,10 @@
 const mysql = require('mysql');
 //Database connection
 const conn = mysql.createConnection({
-    host: 'sql7.freesqldatabase.com',
-    user: 'sql7339875',
-    password: 'tcyCE9lpMR',
-    database: 'sql7339875',
-    port: '3306'
+    host: 'sql205.epizy.com',
+    user: 'epiz_24959421',
+    password: 'rFPpERvM61L',
+    database: 'epiz_24959421_loxionbeanery'
 });
 
 //add zero to signle digit date and times
