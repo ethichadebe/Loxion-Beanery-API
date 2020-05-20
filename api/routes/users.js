@@ -32,7 +32,7 @@ router.get('/CheckPassword/:uID/:uPassword', (req, res, next) => {
 //Returns a specific user 
 router.post('/Login', (req, res) => {
     const selectQuery = "SELECT * FROM `users` WHERE (`uNumber` = ? AND `uPassword` = ?)";
-    helperMethods.conn.query(selectQuery, [req.body.uNumber, req.body.uPassword], (err, result, fields) => {
+    helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uPassword], (err, result, fields) => {
         console.log(err)
 //        console.log(result)
         if (result.length > 0) {
