@@ -3,13 +3,13 @@ const app = express();
 const bodyParser = require('body-parser');
 const router = express.Router();
 
-const helperMethods = require('util');
+const helperMethods = require('../../util/util');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //Returns all orders
 router.get('/', (req, res, next) => {
-    conn.query("SELECT * FROM `orders`", (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM `orders`", (err, rows, fields) => {
         console.log(err);
         //console.log(rows);
         res.json({
@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
 
 //Returns all orders for a specific shop
 router.get('/:sID', (req, res, next) => {
-    conn.query("SELECT * FROM orders WHERE sID = ? AND (orders.oStatus = 'Waiting for order' OR orders.oStatus = 'Ready for collection')", req.params.sID, (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM orders WHERE sID = ? AND (orders.oStatus = 'Waiting for order' OR orders.oStatus = 'Ready for collection')", req.params.sID, (err, rows, fields) => {
         console.log(err);
         //console.log(rows);
         if (rows.length > 0) {
@@ -39,7 +39,7 @@ router.get('/:sID', (req, res, next) => {
 
 //Returns all past orders for a specific shop
 router.get('/AdminPastOrders/:sID', (req, res, next) => {
-    conn.query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Collected'", req.params.sID, (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Collected'", req.params.sID, (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -57,7 +57,7 @@ router.get('/AdminPastOrders/:sID', (req, res, next) => {
 
 //Returns all passed orders for a specific shop
 router.get('/shopPast/:sID', (req, res, next) => {
-    conn.query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
 //        console.log(rows);
         if (rows.length > 0) {
@@ -74,7 +74,7 @@ router.get('/shopPast/:sID', (req, res, next) => {
 
 //Returns all upcoming orders for a specific shop
 router.get('/shopUpcoming/:sID', (req, res, next) => {
-    conn.query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =?)", [req.params.sID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =?)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
 //        console.log(rows);
         if (rows.length > 0) {
@@ -91,7 +91,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 
 //Returns all Past orders for a specific user
 router.get('/Past/:uID', (req, res, next) => {
-    conn.query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = 57 AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = 57 AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -109,7 +109,7 @@ router.get('/Past/:uID', (req, res, next) => {
 
 //Returns all Upcoming orders for a specific user
 router.get('/Upcoming/:uID', (req, res, next) => {
-    conn.query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.createdAt", [req.params.uID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.createdAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         //console.log(rows);
         if (rows.length > 0) {
@@ -129,7 +129,7 @@ router.get('/Upcoming/:uID', (req, res, next) => {
 router.post('/Order', (req, res, next) => {
     const insQuery = "INSERT INTO orders(`oIngredients`,`oExtras`,`oPrice`, `sID`,`uID`,`createdAt`) VALUES (?, ?, ?, ?, ?, '" + helperMethods.createdAt() + "')";
 
-    conn.query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID], (err, result, fields) => {
+    helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID], (err, result, fields) => {
         console.log(err);
         console.log(result.insertId);
         res.json({
@@ -142,7 +142,7 @@ router.post('/Order', (req, res, next) => {
 router.put('/Arrived/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oRecievedAt = '" + helperMethods.createdAt() + "', oStatus = 'Waiting for order' WHERE oID = ?";
 
-    conn.query(putQuery, [req.params.oID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         res.json({
@@ -155,7 +155,7 @@ router.put('/Arrived/:oID', (req, res, next) => {
 router.put('/Ready/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oFinishedAt = '" + helperMethods.createdAt() + "', oStatus = 'Ready for collection' WHERE oID = ?";
 
-    conn.query(putQuery, [req.params.oID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
        // console.log(result);
         res.json({
@@ -168,7 +168,7 @@ router.put('/Ready/:oID', (req, res, next) => {
 router.put('/Cancel/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
 
-    conn.query(putQuery, [req.params.oID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         res.json({
@@ -181,7 +181,7 @@ router.put('/Cancel/:oID', (req, res, next) => {
 router.put('/Collected/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Collected' WHERE oID = ?";
 
-    conn.query(putQuery, [req.params.oID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
        // console.log(result);
         res. json({
@@ -194,7 +194,7 @@ router.put('/Collected/:oID', (req, res, next) => {
 router.put('/Rate/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ?, oColectedAt = '" + helperMethods.createdAt() + "' WHERE oID = ?";
 
-    conn.query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         res. json({

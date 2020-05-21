@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const router = express.Router();
 
+const helperMethods = require('../../util/util');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -27,29 +28,19 @@ function createdAt() {
 
 }
 
-//Database connection
-const conn = mysql.createConnection({
-    host: 'sql7.freesqldatabase.com',
-    user: 'sql7339875',
-    password: 'tcyCE9lpMR',
-    database: 'sql7339875',
-    port: '3306'
-});
-
-
 router.post('/', (req, res, next) => {
     const insQuery = "INSERT INTO shoplikes(sID, uID) VALUES (?,?);";
 
-    conn.query(insQuery, [req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
+    helperMethods.conn().query(insQuery, [req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         if (err == null) {
             var sID = req.body.sID;
             const upQuery = "UPDATE shops SET shops.sLikes = (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.sID = ?) WHERE shops.sID=?;";
             console.log(err);
             //console.log(result);
-            conn.query(upQuery, [sID, sID], (err, result, fields) => {
+            helperMethods.conn().query(upQuery, [sID, sID], (err, result, fields) => {
                 console.log(err);
                 //console.log(result);
-                conn.query("SELECT COUNT(*) AS sLikes FROM `shoplikes` WHERE sID = ?", [sID], (err, rows, fields) => {
+                helperMethods.conn().query("SELECT COUNT(*) AS sLikes FROM `shoplikes` WHERE sID = ?", [sID], (err, rows, fields) => {
                     console.log(err);
                     console.log(rows[0].sLikes);
                     res.json({
@@ -68,16 +59,16 @@ router.post('/', (req, res, next) => {
 router.delete('/:uID/:sID', (req, res, next) => {
     const delQuery = "DELETE FROM `shoplikes` WHERE `sID` = ? AND `uID` = ?;";
 
-    conn.query(delQuery, [req.params.sID, req.params.uID, req.params.sID], (err, result, fields) => {
+    helperMethods.conn().query(delQuery, [req.params.sID, req.params.uID, req.params.sID], (err, result, fields) => {
         if (err == null) {
             var sID = req.params.sID;
             const upQuery = "UPDATE shops SET shops.sLikes = (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.sID = ?) WHERE shops.sID=?;";
             console.log(err);
             //console.log(result);
-            conn.query(upQuery, [sID, sID], (err, result, fields) => {
+            helperMethods.conn().query(upQuery, [sID, sID], (err, result, fields) => {
                 console.log(err);
                 //console.log(result);
-                conn.query("SELECT COUNT(*) AS sLikes FROM `shoplikes` WHERE sID = ?", [sID], (err, rows, fields) => {
+                helperMethods.conn().query("SELECT COUNT(*) AS sLikes FROM `shoplikes` WHERE sID = ?", [sID], (err, rows, fields) => {
                     console.log(err);
                     console.log(rows[0].sLikes);
                     res.json({
