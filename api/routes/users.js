@@ -6,8 +6,8 @@ const helperMethods = require('../../util/util');
 
 //Returns all users
 router.get('/', (req, res, next) => {
-    //console.log(helperMethods.conn);
-    helperMethods.conn.query("SELECT * FROM users", (err, result, fields) => {
+    //console.log(helperMethods.conn());
+    helperMethods.conn().query("SELECT * FROM users", (err, result, fields) => {
         res.json({
             users: result
         });
@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
 
 //Change Password
 router.get('/CheckPassword/:uID/:uPassword', (req, res, next) => {
-    helperMethods.conn.query("SELECT * FROM users WHERE uID=? AND uPassword=?",[req.params.uID, req.params.uPassword], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM users WHERE uID=? AND uPassword=?",[req.params.uID, req.params.uPassword], (err, rows, fields) => {
         if (rows.length > 0) {
             res.json({
                 message:"true",
@@ -55,7 +55,7 @@ router.post('/Register', (req, res) => {
     const selectQuery2 = "SELECT * FROM users WHERE uEmail = ?";
 
     //Check if number and email exists then register 
-    helperMethods.conn.query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
+    helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
         if (result.length > 0) {
             console.log(err);
            // console.log(result);
@@ -64,20 +64,20 @@ router.post('/Register', (req, res) => {
             });
         } else {
             //Check if number exists
-            helperMethods.conn.query(selectQuery1, [req.body.uNumber], (err, result, fields) => {
+            helperMethods.conn().query(selectQuery1, [req.body.uNumber], (err, result, fields) => {
                 if (result.length > 0) {
                     res.json({
                         data: "number"
                     });
                 } else {
                     //Check if email exists
-                    helperMethods.conn.query(selectQuery2, [req.body.uEmail], (err, result, fields) => {
+                    helperMethods.conn().query(selectQuery2, [req.body.uEmail], (err, result, fields) => {
                         if (result.length > 0) {
                             res.json({
                                 data: "email"
                             })
                         } else {
-                            helperMethods.conn.query(insQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uEmail,
+                            helperMethods.conn().query(insQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uEmail,
                             req.body.uNumber, req.body.uPassword], (err, result, fields) => {
                                 console.log(err);
                                 console.log(result.insertId);
@@ -102,7 +102,7 @@ router.put('/EditNumber', (req, res, next) => {
     //Check if number exists
     var number = req.body.uNumber;
     var uID = req.body.uID;
-    helperMethods.conn.query(selectQuery, [number], (err, result, fields) => {
+    helperMethods.conn().query(selectQuery, [number], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         if (result.length > 0) {
@@ -110,13 +110,13 @@ router.put('/EditNumber', (req, res, next) => {
                 data: "number"
             });
         } else {
-            helperMethods.conn.query(updateQuery, [number, uID], (err, result, fields) => {
+            helperMethods.conn().query(updateQuery, [number, uID], (err, result, fields) => {
                 console.log(uID);
                 console.log(err);
                 //console.log(result);
                 const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
                 console.log(uID);
-                helperMethods.conn.query(selectQuery, [uID], (err, result, fields) => {
+                helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
                     console.log(err);
                    // console.log(result);
                     res.json({
@@ -137,7 +137,7 @@ router.put('/EditEmail', (req, res, next) => {
     //Check if email exists
     var email = req.body.uEmail;
     var uID = req.body.uID;
-    helperMethods.conn.query(selectQuery, [email], (err, result, fields) => {
+    helperMethods.conn().query(selectQuery, [email], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         if (result.length > 0) {
@@ -145,13 +145,13 @@ router.put('/EditEmail', (req, res, next) => {
                 data: "email"
             });
         } else {
-            helperMethods.conn.query(updateQuery, [email, uID], (err, result, fields) => {
+            helperMethods.conn().query(updateQuery, [email, uID], (err, result, fields) => {
                 console.log(uID);
                 console.log(err);
                 //console.log(result);
                 const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
                 console.log(uID);
-                helperMethods.conn.query(selectQuery, [uID], (err, result, fields) => {
+                helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
                 console.log(err);
                    // console.log(result);
                     res.json({
@@ -169,12 +169,12 @@ router.put('/EditProfile', (req, res, next) => {
     const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ? WHERE uID = ?";
 
     //Check if number and email exists then register 
-    helperMethods.conn.query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uID], (err, result, fields) => {
+    helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uID], (err, result, fields) => {
         //console.log(err);
         const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
         var uID = req.body.uID;
         console.log(uID);
-        helperMethods.conn.query(selectQuery, [uID], (err, result, fields) => {
+        helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
             console.log(err);
             //console.log(result);
             res.json({
@@ -191,12 +191,12 @@ router.put('/ChangePassword/:uID', (req, res, next) => {
     const updateQuery = "UPDATE users SET uPassword = ? WHERE uID = ?";
 
     //Check if number and email exists then register 
-    helperMethods.conn.query(updateQuery, [req.body.uPassword, req.params.uID], (err, result, fields) => {
+    helperMethods.conn().query(updateQuery, [req.body.uPassword, req.params.uID], (err, result, fields) => {
         //console.log(err);
         const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
         var uID = req.params.uID;
         console.log(uID);
-        helperMethods.conn.query(selectQuery, [uID], (err, result, fields) => {
+        helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
             console.log(err);
             //console.log(result);
             res.json({

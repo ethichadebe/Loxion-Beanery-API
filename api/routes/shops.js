@@ -1,21 +1,11 @@
 const express = require('express');
 const app = express();
-const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const router = express.Router();
 
+const helperMethods = require('../../util/util');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
-//Database connection
-const conn = mysql.createConnection({
-    host: 'sql7.freesqldatabase.com',
-    user: 'sql7339875',
-    password: 'tcyCE9lpMR',
-    database: 'sql7339875',
-    port: '3306'
-});
-
 
 function addZero(data) {
     if (data.length < 2) {
@@ -43,7 +33,7 @@ function logOutput(err, result) {
 
 //Returns all shops
 router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
-    conn.query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(shops.sLatitude)) * COS(RADIANS(?)) * COS(RADIANS(shops.sLongitude - ?)) + SIN(RADIANS(shops.sLatitude)) * SIN(RADIANS(?)))))) AS distance FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC, distance ASC", [req.params.uID, req.params.sLatitude, req.params.sLongitude, req.params.sLatitude], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(shops.sLatitude)) * COS(RADIANS(?)) * COS(RADIANS(shops.sLongitude - ?)) + SIN(RADIANS(shops.sLatitude)) * SIN(RADIANS(?)))))) AS distance FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC, distance ASC", [req.params.uID, req.params.sLatitude, req.params.sLongitude, req.params.sLatitude], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -61,7 +51,7 @@ router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
 
 //Returns all shops owned by user
 router.get('/MyShops/:uID', (req, res, next) => {
-    conn.query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) AND (shops.isActive != 2) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
+    helperMethods.conn().query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) AND (shops.isActive != 2) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
     console.log(err);
     console.log(rows);
         if (rows.length > 0) {
@@ -79,7 +69,7 @@ router.get('/MyShops/:uID', (req, res, next) => {
 
 //Returns all Menuitems for each shop
 router.get('/MenuItems/:sID', (req, res, next) => {
-    conn.query("SELECT * FROM `menuitems` WHERE sID = ? ORDER BY `mPrice` ASC", req.params.sID, (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM `menuitems` WHERE sID = ? ORDER BY `mPrice` ASC", req.params.sID, (err, rows, fields) => {
         console.log(err);
         //console.log(rows);
         if (rows.length > 0) {
@@ -97,7 +87,7 @@ router.get('/MenuItems/:sID', (req, res, next) => {
 
 //Returns all Ingredients for each shop
 router.get('/Ingredients/:sID', (req, res, next) => {
-    conn.query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID, req.params.sID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID, req.params.sID], (err, rows, fields) => {
         console.log(err);
        // console.log(rows);
         if (rows.length > 0) {
@@ -115,7 +105,7 @@ router.get('/Ingredients/:sID', (req, res, next) => {
 
 //Returns all Extras for each shop
 router.get('/Extras/:sID', (req, res, next) => {
-    conn.query("SELECT * FROM `extras` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM `extras` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
         console.log(err);
         //  console.log(rows);
         if (rows.length > 0) {
@@ -135,13 +125,13 @@ router.get('/Extras/:sID', (req, res, next) => {
 router.post('/Register', (req, res, next) => {
     const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?, ?, ?, ?, 0.0, 0,0,?,0, '" + createdAt() + "')";
 
-    conn.query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
+    helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         var sID = result.insertId;
         const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + createdAt() + "')";
-        conn.query(insQuery1, [req.body.uID], (err, result, fields) => {
+        helperMethods.conn().query(insQuery1, [req.body.uID], (err, result, fields) => {
             console.log(err);
             //console.log(result);
             res.json({
@@ -155,11 +145,11 @@ router.post('/Register', (req, res, next) => {
 router.post('/Register/Ingredient', (req, res, next) => {
     const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,`isActive`,`createdAt`) VALUES (?, ?, ?, 1, '" + createdAt() + "')";
 
-    conn.query(insQuery, [req.body.iName, req.body.iPrice, req.body.sID], (err, result, fields) => {
+    helperMethods.conn().query(insQuery, [req.body.iName, req.body.iPrice, req.body.sID], (err, result, fields) => {
         const selQuery = "SELECT * FROM `ingredients` WHERE iID = ?";
         console.log(req.body.iPrice);
 
-        conn.query(selQuery, result.insertId, (err, result, fields) => {
+        helperMethods.conn().query(selQuery, result.insertId, (err, result, fields) => {
             console.log(err);
             //console.log(result);
             res.json({
@@ -176,20 +166,20 @@ router.post('/Register/MenuItem', (req, res, next) => {
     const checkQuesry = "SELECT COUNT(menuitems.sID) AS nItems FROM menuitems WHERE menuitems.sID = ?";
     const ActivateQuery = "UPDATE `shops` SET `isActive` = '1' WHERE `shops`.`sID` = ?;";
     const selQuery = "SELECT * FROM `menuitems` WHERE mID = ?";
-    conn.query(insQuery, [req.body.mList, req.body.mPrice, req.body.sID], (err, result, fields) => {
+    helperMethods.conn().query(insQuery, [req.body.mList, req.body.mPrice, req.body.sID], (err, result, fields) => {
         console.log(err);
 //        console.log(result);
         var ID = result.insertId;
-        conn.query(checkQuesry, [req.body.sID], (err, result, fields) => {
+        helperMethods.conn().query(checkQuesry, [req.body.sID], (err, result, fields) => {
 //            console.log(result);
             console.log(err);
             console.log(result[0].nItems);
             if (result[0].nItems == 1) {
-                conn.query(ActivateQuery, req.body.sID, (err, result, fields) => {
+                helperMethods.conn().query(ActivateQuery, req.body.sID, (err, result, fields) => {
                     console.log(err);
                     console.log("isActive activated");
                     //console.log(result);
-                    conn.query(selQuery, ID, (err, result, fields) => {
+                    helperMethods.conn().query(selQuery, ID, (err, result, fields) => {
                         console.log(err);
                         //console.log(result);
                         res.json({
@@ -200,7 +190,7 @@ router.post('/Register/MenuItem', (req, res, next) => {
                 });
 
             } else {
-                conn.query(selQuery, ID, (err, result, fields) => {
+                helperMethods.conn().query(selQuery, ID, (err, result, fields) => {
                     console.log("else");
                     console.log(err);
                     //console.log(result);
@@ -220,10 +210,10 @@ router.post('/Register/MenuItem', (req, res, next) => {
 router.post('/Register/Extra', (req, res, next) => {
     const insQuery = "INSERT INTO extras(`eName`,`isActive`,`sID`,`createdAt`) VALUES (?, 1,?, '" + createdAt() + "')";
 
-    conn.query(insQuery, [req.body.eName, req.body.sID], (err, result, fields) => {
+    helperMethods.conn().query(insQuery, [req.body.eName, req.body.sID], (err, result, fields) => {
         const selQuery = "SELECT * FROM `extras` WHERE eID = ?";
 
-        conn.query(selQuery, result.insertId, (err, result, fields) => {
+        helperMethods.conn().query(selQuery, result.insertId, (err, result, fields) => {
             console.log(err);
             //console.log(result);
             res.json({
@@ -238,7 +228,7 @@ router.post('/Register/Extra', (req, res, next) => {
 router.delete('/Register/Ingredient/:iID', (req, res, next) => {
     const delQuery = "DELETE FROM `ingredients` WHERE `ingredients`.`iID` = ?";
 
-    conn.query(delQuery, [req.params.iID], (err, result, fields) => {
+    helperMethods.conn().query(delQuery, [req.params.iID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         res.json({
@@ -254,18 +244,18 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
     const checkQuesry = "SELECT COUNT(menuitems.sID) AS nItems FROM menuitems WHERE menuitems.sID = ?";
 
     var sID = req.params.sID;
-    conn.query(delQuery, [req.params.mID], (err, result, fields) => {
+    helperMethods.conn().query(delQuery, [req.params.mID], (err, result, fields) => {
         console.log(err);
 //        console.log(result);
         if (result == undefined) {
             res.err("something went wrong please try again")
         } else {
-            conn.query(checkQuesry, [sID], (err, result, fields) => {
+            helperMethods.conn().query(checkQuesry, [sID], (err, result, fields) => {
              //   console.log(result);
                 console.log(err);
                 console.log(result[0].nItems);
                 if (result[0].nItems == 0) {
-                    conn.query(DeactivateQuery, [sID], (err, result, fields) => {
+                    helperMethods.conn().query(DeactivateQuery, [sID], (err, result, fields) => {
                         console.log(sID);
                         console.log(err);
                         console.log("isActive deactivated");
@@ -291,7 +281,7 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
 router.delete('/Register/Extra/:eID', (req, res, next) => {
     const delQuery = "DELETE FROM `extras` WHERE `extras`.`eID` = ?";
 
-    conn.query(delQuery, [req.body.eID], (err, result, fields) => {
+    helperMethods.conn().query(delQuery, [req.body.eID], (err, result, fields) => {
         console.log(err);
       //  console.log(result);
         res.json({
@@ -304,7 +294,7 @@ router.delete('/Register/Extra/:eID', (req, res, next) => {
 router.put('/Register/:sID', (req, res, next) => {
     const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = ?, `sBigPicture` = ?, `sLatitude` = ?, `sLongitude` = ?,`sOperatingHrs` = ? WHERE sID = ?";
 
-    conn.query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
+    helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
@@ -318,7 +308,7 @@ router.put('/Register/:sID', (req, res, next) => {
 router.put('/Register/Ingredient/:iID', (req, res, next) => {
     const putQuery = "UPDATE ingredients SET iName = ?, iPrice = ? WHERE iID = ?";
 
-    conn.query(putQuery, [req.body.iName, req.body.iPrice, req.params.iID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.body.iName, req.body.iPrice, req.params.iID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         res.json({
@@ -331,7 +321,7 @@ router.put('/Register/Ingredient/:iID', (req, res, next) => {
 router.put('/Register/MenuItems/:mID', (req, res, next) => {
     const putQuery = "UPDATE menuitems SET mList = ?, mPrice = ? WHERE mID = ?";
 
-    conn.query(putQuery, [req.body.mList, req.body.mPrice, req.params.mID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.body.mList, req.body.mPrice, req.params.mID], (err, result, fields) => {
         console.log(err);
        // console.log(result);
         res.json({
@@ -344,7 +334,7 @@ router.put('/Register/MenuItems/:mID', (req, res, next) => {
 router.put('/Register/Extra/:eID', (req, res, next) => {
     const putQuery = "UPDATE extras SET eName = ? WHERE eID = ?";
 
-    conn.query(putQuery, [req.body.eName, req.params.eID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.body.eName, req.params.eID], (err, result, fields) => {
         console.log(err);
        // console.log(result);
         res.json({
@@ -357,7 +347,7 @@ router.put('/Register/Extra/:eID', (req, res, next) => {
 router.put('/Status/:sID', (req, res, next) => {
     const putQuery = "UPDATE shops SET sStatus = ? WHERE sID = ?";
 
-    conn.query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         res.json({
@@ -370,7 +360,7 @@ router.put('/Status/:sID', (req, res, next) => {
 router.put('/deactivate/:sID', (req, res, next) => {
     const putQuery = "UPDATE shops SET isActive = 2 WHERE sID = ?";
 
-    conn.query(putQuery, [req.params.sID], (err, result, fields) => {
+    helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
         console.log(err);
        // console.log(result);
         res.json({
