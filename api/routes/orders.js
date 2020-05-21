@@ -111,7 +111,7 @@ router.get('/Past/:uID', (req, res, next) => {
 router.get('/Upcoming/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.createdAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-        //console.log(rows);
+        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message:"orders",
