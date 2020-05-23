@@ -52,8 +52,8 @@ router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
 //Returns all shops owned by user
 router.get('/MyShops/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) AND (shops.isActive != 2) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
-    console.log(err);
-    console.log(rows);
+        console.log(err);
+        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "shops",
@@ -89,7 +89,7 @@ router.get('/MenuItems/:sID', (req, res, next) => {
 router.get('/Ingredients/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID, req.params.sID], (err, rows, fields) => {
         console.log(err);
-       // console.log(rows);
+        // console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "shops",
@@ -168,10 +168,10 @@ router.post('/Register/MenuItem', (req, res, next) => {
     const selQuery = "SELECT * FROM `menuitems` WHERE mID = ?";
     helperMethods.conn().query(insQuery, [req.body.mList, req.body.mPrice, req.body.sID], (err, result, fields) => {
         console.log(err);
-//        console.log(result);
+        //        console.log(result);
         var ID = result.insertId;
         helperMethods.conn().query(checkQuesry, [req.body.sID], (err, result, fields) => {
-//            console.log(result);
+            //            console.log(result);
             console.log(err);
             console.log(result[0].nItems);
             if (result[0].nItems == 1) {
@@ -246,12 +246,12 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
     var sID = req.params.sID;
     helperMethods.conn().query(delQuery, [req.params.mID], (err, result, fields) => {
         console.log(err);
-//        console.log(result);
+        //        console.log(result);
         if (result == undefined) {
             res.err("something went wrong please try again")
         } else {
             helperMethods.conn().query(checkQuesry, [sID], (err, result, fields) => {
-             //   console.log(result);
+                //   console.log(result);
                 console.log(err);
                 console.log(result[0].nItems);
                 if (result[0].nItems == 0) {
@@ -283,7 +283,7 @@ router.delete('/Register/Extra/:eID', (req, res, next) => {
 
     helperMethods.conn().query(delQuery, [req.body.eID], (err, result, fields) => {
         console.log(err);
-      //  console.log(result);
+        //  console.log(result);
         res.json({
             data: "removed"
         })
@@ -298,6 +298,19 @@ router.put('/Register/:sID', (req, res, next) => {
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.params.sID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
+        res.json({
+            data: "changed"
+        })
+    });
+});
+
+//Put shop
+router.put('/Register/OH/:sID', (req, res, next) => {
+    const putQuery = "UPDATE shops SET `sOperatingHrs` = ? WHERE sID = ?";
+
+    helperMethods.conn().query(putQuery, [req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
+        console.log(err);
+        console.log(result);
         res.json({
             data: "changed"
         })
@@ -323,7 +336,7 @@ router.put('/Register/MenuItems/:mID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.body.mList, req.body.mPrice, req.params.mID], (err, result, fields) => {
         console.log(err);
-       // console.log(result);
+        // console.log(result);
         res.json({
             data: "changed"
         })
@@ -336,7 +349,7 @@ router.put('/Register/Extra/:eID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.body.eName, req.params.eID], (err, result, fields) => {
         console.log(err);
-       // console.log(result);
+        // console.log(result);
         res.json({
             data: "saved"
         })
@@ -362,7 +375,7 @@ router.put('/deactivate/:sID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
         console.log(err);
-       // console.log(result);
+        // console.log(result);
         res.json({
             data: "deactivated"
         })
