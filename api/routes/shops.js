@@ -7,30 +7,6 @@ const helperMethods = require('../../util/util');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-function addZero(data) {
-    if (data.length < 2) {
-        return "0" + data;
-    }
-    return data;
-}
-
-function createdAt() {
-    var currentdate = new Date();
-    return currentdate.getFullYear() + "-"
-        + addZero("" + (currentdate.getMonth() + 1)) + "-"
-        + addZero("" + currentdate.getDate()) + " "
-        + addZero("" + currentdate.getHours()) + ":"
-        + addZero("" + currentdate.getMinutes()) + ":"
-        + addZero("" + currentdate.getSeconds());
-
-}
-
-function logOutput(err, result) {
-    if (err != null) {
-        console.log(err)
-    }
-}
-
 //Returns all shops
 router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
     helperMethods.conn().query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(shops.sLatitude)) * COS(RADIANS(?)) * COS(RADIANS(shops.sLongitude - ?)) + SIN(RADIANS(shops.sLatitude)) * SIN(RADIANS(?)))))) AS distance FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC, distance ASC", [req.params.uID, req.params.sLatitude, req.params.sLongitude, req.params.sLatitude], (err, rows, fields) => {
@@ -304,7 +280,7 @@ router.put('/Register/:sID', (req, res, next) => {
     });
 });
 
-//Put shop
+//Put operating hours
 router.put('/Register/OH/:sID', (req, res, next) => {
     const putQuery = "UPDATE shops SET `sOperatingHrs` = ? WHERE sID = ?";
 
