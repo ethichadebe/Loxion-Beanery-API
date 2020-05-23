@@ -292,10 +292,10 @@ router.delete('/Register/Extra/:eID', (req, res, next) => {
 
 //Put shop
 router.put('/Register/:sID', (req, res, next) => {
-    const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = ?, `sBigPicture` = ?, `sLatitude` = ?, `sLongitude` = ?,`sOperatingHrs` = ? WHERE sID = ?";
+    const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = ?, `sBigPicture` = ?, `sLatitude` = ?, `sLongitude` = ?, WHERE sID = ?";
 
     helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
-    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
+    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.params.sID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         res.json({
