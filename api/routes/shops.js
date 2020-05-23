@@ -295,7 +295,7 @@ router.put('/Register/:sID', (req, res, next) => {
     const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = ?, `sBigPicture` = ?, `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ? WHERE sID = ?";
 
     helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
-    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude,, req.body.sAddress, req.params.sID], (err, result, fields) => {
+    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.params.sID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         res.json({
