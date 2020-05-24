@@ -310,9 +310,11 @@ router.put('/Register/Ingredient/:sID', (req, res, next) => {
         helperMethods.conn().query(updateMenuQuery, [oldName, newName, shopID], (err, result, fields) => {
             console.log(err);
             console.log(result);
-            res.json({
-                data: "changed"
-            })
+            if(result.changedRows > 0){
+                res.json({
+                    data: "changed"
+                })    
+            }
         });
         });
 });
