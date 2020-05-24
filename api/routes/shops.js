@@ -99,14 +99,14 @@ router.get('/Extras/:sID', (req, res, next) => {
 
 //Register shop
 router.post('/Register', (req, res, next) => {
-    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?, ?, ?, ?, 0.0, 0,0,?,0, '" + createdAt() + "')";
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`isActive`,`createdAt`) VALUES (?, ?,?, ?, ?, ?, ?, 0.0, 0,0,?,0, '" + helperMethods.createdAt() + "')";
 
     helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs], (err, result, fields) => {
         console.log(err);
         //console.log(result);
         var sID = result.insertId;
-        const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + createdAt() + "')";
+        const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + helperMethods.createdAt() + "')";
         helperMethods.conn().query(insQuery1, [req.body.uID], (err, result, fields) => {
             console.log(err);
             //console.log(result);
@@ -119,7 +119,7 @@ router.post('/Register', (req, res, next) => {
 
 //Register shop Ingredients
 router.post('/Register/Ingredient', (req, res, next) => {
-    const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,`isActive`,`createdAt`) VALUES (?, ?, ?, 1, '" + createdAt() + "')";
+    const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,`isActive`,`createdAt`) VALUES (?, ?, ?, 1, '" + helperMethods.createdAt() + "')";
 
     helperMethods.conn().query(insQuery, [req.body.iName, req.body.iPrice, req.body.sID], (err, result, fields) => {
         const selQuery = "SELECT * FROM `ingredients` WHERE iID = ?";
@@ -138,7 +138,7 @@ router.post('/Register/Ingredient', (req, res, next) => {
 
 //Register shop Menu items
 router.post('/Register/MenuItem', (req, res, next) => {
-    const insQuery = "INSERT INTO `menuitems` (`mList`, `mPrice`, `isActive`, `sID`, `createdAt`) VALUES (?, ?, '0', ?, '" + createdAt() + "')";
+    const insQuery = "INSERT INTO `menuitems` (`mList`, `mPrice`, `isActive`, `sID`, `createdAt`) VALUES (?, ?, '0', ?, '" + helperMethods.createdAt() + "')";
     const checkQuesry = "SELECT COUNT(menuitems.sID) AS nItems FROM menuitems WHERE menuitems.sID = ?";
     const ActivateQuery = "UPDATE `shops` SET `isActive` = '1' WHERE `shops`.`sID` = ?;";
     const selQuery = "SELECT * FROM `menuitems` WHERE mID = ?";
@@ -184,7 +184,7 @@ router.post('/Register/MenuItem', (req, res, next) => {
 
 //Register shop Extras
 router.post('/Register/Extra', (req, res, next) => {
-    const insQuery = "INSERT INTO extras(`eName`,`isActive`,`sID`,`createdAt`) VALUES (?, 1,?, '" + createdAt() + "')";
+    const insQuery = "INSERT INTO extras(`eName`,`isActive`,`sID`,`createdAt`) VALUES (?, 1,?, '" + helperMethods.createdAt() + "')";
 
     helperMethods.conn().query(insQuery, [req.body.eName, req.body.sID], (err, result, fields) => {
         const selQuery = "SELECT * FROM `extras` WHERE eID = ?";
