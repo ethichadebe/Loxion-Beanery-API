@@ -297,7 +297,7 @@ router.put('/Register/OH/:sID', (req, res, next) => {
 //Put shop Ingredients
 router.put('/Register/Ingredient/:iID/:sID', (req, res, next) => {
     var newName = req.body.iName;
-    var oldName = req.body.newName;
+    var oldName = req.body.iPrevious;
     var newPrice = req.body.iPrice;
     var ingredientID = req.params.sID;
     var shopID = req.params.sID;
