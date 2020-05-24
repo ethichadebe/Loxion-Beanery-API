@@ -295,14 +295,15 @@ router.put('/Register/OH/:sID', (req, res, next) => {
 });
 
 //Put shop Ingredients
-router.put('/Register/Ingredient/:sID', (req, res, next) => {
+router.put('/Register/Ingredient/:iID/:sID', (req, res, next) => {
     var newName = req.body.iName;
     var oldName = req.body.newName;
     var newPrice = req.body.iPrice;
+    var ingredientID = req.params.sID;
     var shopID = req.params.sID;
 
-    const putQuery = "UPDATE ingredients SET iName = ?, iPrice = ? WHERE sID = ?";
-    helperMethods.conn().query(putQuery, [newName, newPrice, shopID], (err, result, fields) => {
+    const putQuery = "UPDATE ingredients SET iName = ?, iPrice = ? WHERE iID = ?";
+    helperMethods.conn().query(putQuery, [newName, newPrice, ingredientID], (err, result, fields) => {
         console.log(err);
         console.log(result);
         const updateMenuQuery = "UPDATE menuitems SET menuitems.mList = REPLACE (menuitems.mList, ?, ?) WHERE menuitems.sID = ?";
