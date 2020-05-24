@@ -303,7 +303,7 @@ router.put('/Register/Ingredient/:iID', (req, res, next) => {
         //console.log(result);
         const updateMenuQuery = "UPDATE menuitems SET menuitems.mList = REPLACE (menuitems.mList, ?, ?) WHERE menuitems.sID = ?";
 
-        helperMethods.conn().query(putQuery, [req.body.iPrevious, req.body.iName, req.params.iID], (err, result, fields) => {
+        helperMethods.conn().query(updateMenuQuery, [req.body.iPrevious, req.body.iName, req.params.iID], (err, result, fields) => {
             console.log(err);
             //console.log(result);
             res.json({
