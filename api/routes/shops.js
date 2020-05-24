@@ -301,10 +301,16 @@ router.put('/Register/Ingredient/:iID', (req, res, next) => {
     helperMethods.conn().query(putQuery, [req.body.iName, req.body.iPrice, req.params.iID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
-        res.json({
-            data: "changed"
-        })
-    });
+        const updateMenuQuery = "UPDATE menuitems SET menuitems.mList = REPLACE (menuitems.mList, ?, ?) WHERE menuitems.sID = ?";
+
+        helperMethods.conn().query(putQuery, [req.body.iPrevious, req.body.iName, req.params.iID], (err, result, fields) => {
+            console.log(err);
+            //console.log(result);
+            res.json({
+                data: "changed"
+            })
+        });
+        });
 });
 
 //Put shop Menu items
