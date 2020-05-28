@@ -186,12 +186,34 @@ router.put('/EditProfile', (req, res, next) => {
 
 });
 
-//Update user information
+//Update user password
 router.put('/ChangePassword/:uID', (req, res, next) => {
     const updateQuery = "UPDATE users SET uPassword = ? WHERE uID = ?";
 
     //Check if number and email exists then register 
     helperMethods.conn().query(updateQuery, [req.body.uPassword, req.params.uID], (err, result, fields) => {
+        //console.log(err);
+        const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
+        var uID = req.params.uID;
+        console.log(uID);
+        helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
+            console.log(err);
+            //console.log(result);
+            res.json({
+                data: "saved",
+                response: result
+            })
+        });
+    });
+
+});
+
+//Update user User type
+router.put('/ChangeUserType/:uID', (req, res, next) => {
+    const updateQuery = "UPDATE users SET uType = ? WHERE uID = ?";
+
+    //Check if number and email exists then register 
+    helperMethods.conn().query(updateQuery, [req.body.uType, req.params.uID], (err, result, fields) => {
         //console.log(err);
         const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
         var uID = req.params.uID;
