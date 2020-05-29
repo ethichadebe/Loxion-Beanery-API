@@ -59,7 +59,7 @@ router.get('/AdminPastOrders/:sID', (req, res, next) => {
 router.get('/shopPast/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
-//        console.log(rows);
+        //        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -76,7 +76,7 @@ router.get('/shopPast/:sID', (req, res, next) => {
 router.get('/shopUpcoming/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =?)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
-//        console.log(rows);
+        //        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -96,7 +96,7 @@ router.get('/Past/:uID', (req, res, next) => {
         console.log(rows);
         if (rows.length > 0) {
             res.json({
-                message:"orders",
+                message: "orders",
                 orders: rows
             })
         } else {
@@ -114,7 +114,7 @@ router.get('/Upcoming/:uID', (req, res, next) => {
         console.log(rows);
         if (rows.length > 0) {
             res.json({
-                message:"orders",
+                message: "orders",
                 orders: rows
             })
         } else {
@@ -157,7 +157,7 @@ router.put('/Ready/:oID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-       // console.log(result);
+        // console.log(result);
         res.json({
             data: "updated"
         })
@@ -183,23 +183,28 @@ router.put('/Collected/:oID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-       // console.log(result);
-        res. json({
+        // console.log(result);
+        res.json({
             data: "Canceled"
         })
     });
 });
 
 //Rate order
-router.put('/Rate/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ?, oColectedAt = '" + helperMethods.createdAt() + "' WHERE oID = ?";
+router.put('/Rate/:oID/:sID', (req, res, next) => {
 
+    const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ?, oColectedAt = '" + helperMethods.createdAt() + "' WHERE oID = ?";
     helperMethods.conn().query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
         console.log(err);
         //console.log(result);
-        res. json({
-            data: "saved"
-        })
+        const putShopQuery = "UPDATE shops SET shops.sRating = (SELECT AVG(orders.oRating) FROM orders WHERE orders.sID = ? AND orders.oRating > 0) WHERE shops.sID = ?";
+        helperMethods.conn().query(putShopQuery, [req.params.sID, req.params.sID], (err, result, fields) => {
+            console.log(err);
+            //console.log(result);
+            res.json({
+                data: "saved"
+            })
+        });
     });
 });
 
