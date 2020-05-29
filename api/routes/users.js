@@ -48,7 +48,7 @@ router.post('/Login', (req, res) => {
 });
 
 //New user registration 
-router.post('/Register/:uID', (req, res, next) => {
+router.post('/Register', (req, res, next) => {
     const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uDOB`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`uType`,`isActive`) VALUES (?, ?,?, ?, ?, ?,?,?,1)";
 
     helperMethods.conn().query(insQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uEmail,
