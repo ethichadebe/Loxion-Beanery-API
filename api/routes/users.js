@@ -175,7 +175,7 @@ router.put('/EditEmail', (req, res, next) => {
 
 //Update user information
 router.put('/EditProfile', upload.single('ProfilePicture'), (req, res, next) => {
-    console.log(req.file);
+    console.log("The file " + req.file);
     const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ? WHERE uID = ?";
 
     //Check if number and email exists then register 
