@@ -1,11 +1,8 @@
 const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
 const router = express.Router();
 
 const helperMethods = require('../../util/util');
 
-app.use(bodyParser.urlencoded({ extended: false }));
 
 //Returns all orders
 router.get('/', (req, res, next) => {

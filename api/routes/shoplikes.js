@@ -1,12 +1,7 @@
 const express = require('express');
-const app = express();
-const mysql = require('mysql');
-const bodyParser = require('body-parser');
 const router = express.Router();
-
 const helperMethods = require('../../util/util');
 
-app.use(bodyParser.urlencoded({ extended: false }));
 
 //add zero to signle digit date and times
 function addZero(data) {
