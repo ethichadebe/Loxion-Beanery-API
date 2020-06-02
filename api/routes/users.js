@@ -5,10 +5,10 @@ const router = express.Router();
 const helperMethods = require('../../util/util');
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, './Uploads/');
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         const now = new Date().toISOString(); const date = now.replace(/:/g, '-'); cb(null, date + file.originalname);
     }
 });
@@ -186,7 +186,7 @@ router.put('/EditEmail', (req, res, next) => {
 //Update user information
 router.put('/EditProfile', upload.single('ProfilePicture'), (req, res, next) => {
     console.log(req.file);
-    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ? WHERE uID = ?";
+    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uPicture = '" + req.file.originalname + "' WHERE uID = ?";
 
     //Check if number and email exists then register 
     helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uID], (err, result, fields) => {
