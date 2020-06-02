@@ -1,19 +1,19 @@
 const mysql = require('mysql');
 //Database connection remote 
-/*const conn = mysql.createConnection({
+const conn = mysql.createConnection({
     host: 'sql7.freemysqlhosting.net',
     database: 'sql7343964',
     user: 'sql7343964',
     password: 'xcAqe3Dk98',
     port: '3306'
-});*/
+});
 
 //Database connection local 
-const conn = mysql.createConnection({
+/*const conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     database: 'loxionbeanery'
-});
+});*/
 
 //add zero to signle digit date and times
 function addZero(data) {
