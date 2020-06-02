@@ -186,7 +186,7 @@ router.put('/EditEmail', (req, res, next) => {
 //Update user information
 router.put('/EditProfile', upload.fields([{name: 'ProfilePicture'},{name: 'ProfilePicture2'}]), (req, res, next) => {
     console.log(req.files);
-    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uPicture = '" + req.file.path + "' WHERE uID = ?";
+    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uPicture = '" + req.files[0].path + "' WHERE uID = ?";
 
     //Check if number and email exists then register 
     helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uID], (err, result, fields) => {
