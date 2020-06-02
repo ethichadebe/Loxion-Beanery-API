@@ -3,7 +3,7 @@ const multer = require('multer');
 const router = express.Router();
 
 const helperMethods = require('../../util/util');
-const upload = multer({ dest: 'Uploads/' })
+const upload = multer({ dest: 'Uploads/' });
 //Returns all users
 router.get('/', (req, res, next) => {
     //console.log(helperMethods.conn());
@@ -48,7 +48,7 @@ router.post('/Login', (req, res) => {
 });
 
 //New user registration 
-router.post('/Register',upload.single('ProfilePicture'), (req, res, next) => {
+router.post('/Register', (req, res, next) => {
     console.log(req.file);
     const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uDOB`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`uType`,`isActive`) VALUES (?, ?,?, ?, ?, ?,?,?,1)";
 
