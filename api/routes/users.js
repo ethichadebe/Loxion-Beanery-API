@@ -184,7 +184,7 @@ router.put('/EditEmail', (req, res, next) => {
 });
 
 //Update user information
-router.put('/EditProfile', upload.single('ProfilePicture'), (req, res, next) => {
+router.put('/EditProfile', upload.single('ProfilePicture'), upload.single('ProfilePicture2'), (req, res, next) => {
     console.log(req.file);
     const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uPicture = '" + req.file.path + "' WHERE uID = ?";
 
