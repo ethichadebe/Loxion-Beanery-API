@@ -3,7 +3,16 @@ const multer = require('multer');
 const router = express.Router();
 
 const helperMethods = require('../../util/util');
-const upload = multer({ dest: 'Uploads/' });
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './Uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname)
+    }
+});
+const upload = multer({ storage: storage });
 //Returns all users
 router.get('/', (req, res, next) => {
     //console.log(helperMethods.conn());
