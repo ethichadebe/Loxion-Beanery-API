@@ -94,8 +94,8 @@ router.get('/Extras/:sID', (req, res, next) => {
 });
 
 //Register shop
-router.post('/Register', (req, res, next) => {
-    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`sAddress`,`isActive`,`createdAt`) VALUES (?, ?,?, ?, ?, ?, ?, 0.0, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
+router.post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`sAddress`,`isActive`,`createdAt`) VALUES (?, ?,?, '" + req.files.sSmallPicture.filename + "', '" + req.files.sBigPicture.filename + "', ?, ?, 0.0, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
 
     helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs, req.body.sAddress], (err, result, fields) => {
@@ -306,13 +306,13 @@ router.put('/Register/Ingredient/:iID/:sID', (req, res, next) => {
         helperMethods.conn().query(updateMenuQuery, [oldName, newName, shopID], (err, result, fields) => {
             console.log(err);
             console.log(result);
-            if(result.changedRows > 0){
+            if (result.changedRows > 0) {
                 res.json({
                     data: "changed"
-                })    
+                })
             }
         });
-        });
+    });
 });
 
 //Put shop Menu items
