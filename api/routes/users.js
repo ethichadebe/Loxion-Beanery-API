@@ -4,10 +4,10 @@ const router = express.Router();
 const helperMethods = require('../../util/util');
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: function(req, file, cb) {
         cb(null, './Uploads/');
     },
-    filename: function (req, file, cb) {
+    filename: function(req, file, cb) {
         const now = new Date().toISOString(); const date = now.replace(/:/g, '-'); cb(null, date + file.originalname);
     }
 });
