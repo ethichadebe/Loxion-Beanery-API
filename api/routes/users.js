@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const helperMethods = require('../../util/util');
+const multer = require('multer');
+
+const upload = multer({dest: 'Uploads/'});
+
 
 //Returns all users
 router.get('/', (req, res, next) => {
@@ -172,9 +176,9 @@ router.put('/EditEmail', (req, res, next) => {
 });
 
 //Update user information
-router.put('/EditProfile', (req, res, next) => {
+router.put('/EditProfile', upload.single('ProfilePicture'), (req, res, next) => {
     //console.log(req.file);
-    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uPicture = ' + req.file.path + ' WHERE uID = ?";
+    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ? WHERE uID = ?";
 
     //Check if number and email exists then register 
     helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uID], (err, result, fields) => {
