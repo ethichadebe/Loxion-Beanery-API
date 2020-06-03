@@ -10,7 +10,7 @@ const orderRoutes = require('./api/routes/orders');
 const shopLikesRoutes = require('./api/routes/shoplikes');
 
 app.use(morgan('combined'));
-app.use("/Uploads/", express.static(__dirname + '/Uploads'));
+app.use(express.static(__dirname + '/Uploads'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
