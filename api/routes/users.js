@@ -8,10 +8,9 @@ const storage = multer.diskStorage({
         cb(null, './Uploads/');
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + file.originalname);
+        const now = new Date().toISOString(); const date = now.replace(/:/g, '-'); cb(null, date + file.originalname);
     }
 });
-
 const upload = multer({ storage: storage });
 //Returns all users
 router.get('/', (req, res, next) => {
