@@ -11,6 +11,7 @@ const storage = multer.diskStorage({
         const now = new Date().toISOString(); const date = now.replace(/:/g, '-'); cb(null, date + file.originalname);
     }
 });
+const upload = multer({ storage: storage });
 
 //Returns all shops
 router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
@@ -103,8 +104,8 @@ router.get('/Extras/:sID', (req, res, next) => {
 });
 
 //Register shop
-router.post('/Register', (req, res, next) => {
-    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`sAddress`,`isActive`,`createdAt`) VALUES (?, ?,?, ?, ?, ?, ?, 0.0, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
+router.post('/Register', upload.fields([{name: 'sSmallPicture'},{name: 'sBigPicture'}]), (req, res, next) => {
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`sAddress`,`isActive`,`createdAt`) VALUES (?, ?,?, '"+req.files.sSmallPicture.path+"', '"+req.files.sBigPicture.path+"', ?, ?, 0.0, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
 
     helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs, req.body.sAddress], (err, result, fields) => {
