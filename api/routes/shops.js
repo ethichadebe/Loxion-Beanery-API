@@ -96,7 +96,7 @@ router.get('/Extras/:sID', (req, res, next) => {
 //Register shop
 router.post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
     console.log(req.files);    
-    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sAddress`,`isActive`,`createdAt`) VALUES (?, ?,?, '" + req.files.sSmallPicture.filename + "', '" + req.files.sBigPicture.filename + "', ?, ?, 0.0, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
+    const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sAddress`,`isActive`,`createdAt`) VALUES (?, ?,?, '" + req.files.sSmallPicture[0].filename + "', '" + req.files.sBigPicture[0].filename + "', ?, ?, 0.0, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
 
     helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
     req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs, 
