@@ -1,4 +1,6 @@
 const mysql = require('mysql');
+const multer = require('multer');
+
 //Database connection remote 
 const conn = mysql.createConnection({
     host: 'sql7.freemysqlhosting.net',
@@ -7,6 +9,21 @@ const conn = mysql.createConnection({
     password: 'xcAqe3Dk98',
     port: '3306'
 });
+
+
+//Image uploader
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function (req, file, cb) {
+        const now = new Date().toISOString();
+        const date = now.replace(/:/g, '-');
+        cb(null, date + file.originalname);
+    }
+});
+const upload = multer({ storage: storage });
+
 
 //Database connection local 
 /*const conn = mysql.createConnection({
@@ -37,6 +54,9 @@ module.exports = {
     },
     conn: function () {
         return conn;
+    },
+    upload: function () {
+        return upload;
     }
 };
 

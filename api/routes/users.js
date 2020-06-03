@@ -1,19 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const helperMethods = require('../../util/util');
-const multer = require('multer');
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/');
-    },
-    filename: function (req, file, cb) {
-        const now = new Date().toISOString();
-        const date = now.replace(/:/g, '-');
-        cb(null, date + file.originalname);
-    }
-});
-const upload = multer({ storage: storage });
 
 
 //Returns all users
@@ -186,7 +173,7 @@ router.put('/EditEmail', (req, res, next) => {
 });
 
 //Update user information
-router.put('/EditProfile', upload.single('ProfilePicture'), (req, res, next) => {
+router.put('/EditProfile', helperMethods.upload.single('ProfilePicture'), (req, res, next) => {
     console.log(req.file);
     const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uPicture = '" + req.file.filename + "' WHERE uID = ?";
 
