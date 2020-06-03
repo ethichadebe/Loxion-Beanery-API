@@ -1,16 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 const helperMethods = require('../../util/util');
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './Uploads/');
-    },
-    filename: function (req, file, cb) {
-        const now = new Date().toISOString(); const date = now.replace(/:/g, '-'); cb(null, date + file.originalname);
-    }
-});
 
 //Returns all shops
 router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
