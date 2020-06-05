@@ -99,8 +99,8 @@ router.post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' 
     req.files.sSmallPicture[0].filename + "', '" + req.files.sBigPicture[0].filename + "', ?, ?, 0.0, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
 
     helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
-    req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs,req.body.sAddress], (err, result, fields) => {
-        console.log(err);
+        req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs,req.body.sAddress], (err, result, fields) => {
+            console.log(err);
         //console.log(result);
         var sID = result.insertId;
         const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + helperMethods.createdAt() + "')";
@@ -250,6 +250,21 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
     });
 });
 
+//Delete shop
+router.delete('/Delete/:sID', (req, res, next) => {
+    const delQuery = "DELETE FROM `shops` WHERE `shops`.`sID` = ?";
+
+    var sID = req.params.sID;
+    helperMethods.conn().query(delQuery, [req.params.sID], (err, result, fields) => {
+        console.log(err);
+        //        console.log(result);
+        res.json({
+            data: "removed",
+            response: result
+        })
+    }
+});
+
 //Delete shop Extras
 router.delete('/Register/Extra/:eID', (req, res, next) => {
     const delQuery = "DELETE FROM `extras` WHERE `extras`.`eID` = ?";
@@ -268,8 +283,8 @@ router.put('/Register/:sID', (req, res, next) => {
     const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = ?, `sBigPicture` = ?, `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ? WHERE sID = ?";
 
     helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
-    req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.params.sID], (err, result, fields) => {
-        console.log(err);
+        req.body.sSmallPicture, req.body.sBigPicture, req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.params.sID], (err, result, fields) => {
+            console.log(err);
         //console.log(result);
         res.json({
             data: "changed"
