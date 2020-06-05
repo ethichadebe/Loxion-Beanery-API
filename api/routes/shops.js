@@ -252,10 +252,12 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
 
 //Delete shop
 router.delete('/Delete/:sID', (req, res, next) => {
-    const delQuery = "DELETE FROM `shops` WHERE `shops`.`sID` = ?";
+    const delShopQuery = "DELETE FROM `shops` WHERE `shops`.`sID` = ?";
+    const delLinkQuery = "DELETE FROM `ingredients` WHERE `ingredients`.`sID` = ?";
+    const delIngredientsQuery = "DELETE FROM `usershopbridge` WHERE `usershopbridge`.`sID` = ?";
 
     var sID = req.params.sID;
-    helperMethods.conn().query(delQuery, [req.params.sID], (err, result, fields) => {
+    helperMethods.conn().query(delIngredientsQuery,delLinkQuery, delShopQuery,[req.params.sID], (err, result, fields) => {
         console.log(err);
         //        console.log(result);
         res.json({
