@@ -261,8 +261,8 @@ router.delete('/Delete/:sID', (req, res, next) => {
         res.json({
             data: "removed",
             response: result
-        })
-    }
+        });
+    });
 });
 
 //Delete shop Extras
