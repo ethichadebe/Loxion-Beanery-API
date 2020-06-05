@@ -257,12 +257,20 @@ router.delete('/Delete/:sID', (req, res, next) => {
     const delIngredientsQuery = "DELETE FROM `usershopbridge` WHERE `usershopbridge`.`sID` = ?";
 
     var sID = req.params.sID;
-    helperMethods.conn().query(delIngredientsQuery,delLinkQuery, delShopQuery,[req.params.sID], (err, result, fields) => {
+    helperMethods.conn().query(delIngredientsQuery, [req.params.sID], (err, result, fields) => {
         console.log(err);
         //        console.log(result);
-        res.json({
-            data: "removed",
-            response: result
+        helperMethods.conn().query(delLinkQuery,[req.params.sID], (err, result, fields) => {
+            console.log(err);
+            //        console.log(result);
+            helperMethods.conn().query(delShopQuery,[req.params.sID], (err, result, fields) => {
+                console.log(err);
+                //        console.log(result);
+                res.json({
+                    data: "removed",
+                    response: result
+                });
+            });
         });
     });
 });
