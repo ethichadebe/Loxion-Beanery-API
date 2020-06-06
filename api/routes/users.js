@@ -56,6 +56,7 @@ router.post('/Register', (req, res, next) => {
         console.log(err);
         console.log(result.insertId);
         res.json({
+            uID: result.insertId,
             data: "Registered"
         })
     });
