@@ -49,7 +49,7 @@ router.post('/Login', (req, res) => {
 //New user registration 
 router.post('/Register', (req, res, next) => {
     console.log(req.file);
-    const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uDOB`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`uType`,`isActive`) VALUES (?, ?,?, ?, ?, ?,?,?,1)";
+    const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uDOB`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`uType`,`isActive`, `createdAt`) VALUES (?, ?,?, ?, ?, ?,?,?,1, '" + helperMethods.createdAt() + "')";
 
     helperMethods.conn().query(insQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uEmail,
     req.body.uNumber, req.body.uPassword, req.body.uType], (err, result, fields) => {
