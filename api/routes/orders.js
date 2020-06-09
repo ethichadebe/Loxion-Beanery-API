@@ -88,7 +88,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 
 //Returns all Past orders for a specific user
 router.get('/Past/:uID', (req, res, next) => {
-    helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = 57 AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
