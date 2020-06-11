@@ -4,9 +4,9 @@ const multer = require('multer');
 //Database connection remote 
 const conn = mysql.createConnection({
     host: 'sql7.freemysqlhosting.net',
-    database: 'sql7345827',
-    user: 'sql7345827',
-    password: 'WWZJJgjMmJ',
+    database: 'sql7347586',
+    user: 'sql7347586',
+    password: 'BLPiElweex',
     port: '3306'
 });
 
