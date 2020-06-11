@@ -289,13 +289,13 @@ router.delete('/Register/Extra/:eID', (req, res, next) => {
 });
 
 //Put shop
-router.put('/Register/:sID',  helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]),(req, res, next) => {
+router.put('/Register/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]),(req, res, next) => {
 	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].filename + "', `sBigPicture` =  '" + req.files.sBigPicture[0].filename + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
 		req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.params.sID], (err, result, fields) => {
-			console.log(err);
-        //console.log(result);
+		console.log(err);
+        console.log(result);
         res.json({
         	data: "changed"
         })
