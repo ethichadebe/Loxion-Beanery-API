@@ -101,12 +101,12 @@ router.post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' 
 	helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
 		req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs,req.body.sAddress], (err, result, fields) => {
 			console.log(err);
-        //console.log(result);
+        console.log(result);
         var sID = result.insertId;
         const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + helperMethods.createdAt() + "')";
         helperMethods.conn().query(insQuery1, [req.body.uID], (err, result, fields) => {
         	console.log(err);
-            //console.log(result);
+            console.log(result);
             res.json({
             	data: sID
             })
