@@ -101,17 +101,17 @@ router.post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' 
 	helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
 		req.body.sLatitude, req.body.sLongitude, req.body.sOperatingHrs,req.body.sAddress], (err, result, fields) => {
 			console.log(err);
-        console.log(result);
-        var sID = result.insertId;
-        const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + helperMethods.createdAt() + "')";
-        helperMethods.conn().query(insQuery1, [req.body.uID], (err, result, fields) => {
-        	console.log(err);
-            console.log(result);
-            res.json({
-            	data: sID
-            })
-        });
-    });
+			console.log(result);
+			var sID = result.insertId;
+			const insQuery1 = "INSERT INTO usershopbridge(`uID`,`sID`,`uRole`, `createdAt`) VALUES (?, " + sID + ", 'Owner', '" + helperMethods.createdAt() + "')";
+			helperMethods.conn().query(insQuery1, [req.body.uID], (err, result, fields) => {
+				console.log(err);
+				console.log(result);
+				res.json({
+					data: sID
+				})
+			});
+		});
 });
 
 //Register shop Ingredients
@@ -294,25 +294,27 @@ router.put('/Register/:sID', helperMethods.upload().fields([{ name: 'sSmallPictu
 
 	helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
 		req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.params.sID], (err, result, fields) => {
-		console.log(err);
-        console.log(result);
-        res.json({
-        	data: "changed"
-        })
-    });
+			console.log(err);
+			console.log(result);
+			res.json({
+				data: "changed"
+			})
+		});
 });
 //Put shop
 router.put('/CompleteRegister/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]),(req, res, next) => {
-	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].filename + "', `sBigPicture` =  '" + req.files.sBigPicture[0].filename + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ? `sOperatingHrs` = ? WHERE sID = ?";
+	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].filename + "', `sBigPicture` =  '" + req.files.sBigPicture[0].filename + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ?, `sOperatingHrs` = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
 		req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
-		console.log(err);
-        console.log(result);
-        res.json({
-        	data: "changed"
-        })
-    });
+			console.log(err);
+			console.log(result);
+			if (!err) {
+				res.json({
+					data: "changed"
+				})
+			}
+		});
 });
 
 //Put operating hours
