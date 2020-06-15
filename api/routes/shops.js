@@ -301,6 +301,19 @@ router.put('/Register/:sID', helperMethods.upload().fields([{ name: 'sSmallPictu
         })
     });
 });
+//Put shop
+router.put('/CompleteRegister/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]),(req, res, next) => {
+	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].filename + "', `sBigPicture` =  '" + req.files.sBigPicture[0].filename + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ? `sOperatingHrs` = ? WHERE sID = ?";
+
+	helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
+		req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
+		console.log(err);
+        console.log(result);
+        res.json({
+        	data: "changed"
+        })
+    });
+});
 
 //Put operating hours
 router.put('/Register/OH/:sID', (req, res, next) => {
