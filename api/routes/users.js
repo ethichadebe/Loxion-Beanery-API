@@ -5,8 +5,9 @@ const helperMethods = require('../../util/util');
 
 //Returns all users
 router.get('/', (req, res, next) => {
-    //console.log(helperMethods.conn());
     helperMethods.conn().query("SELECT * FROM users", (err, result, fields) => {
+        console.log(err)
+        console.log(result)
         res.json({
             users: result
         });
@@ -72,7 +73,7 @@ router.post('/CheckStuff', (req, res) => {
     helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
         if (result.length > 0) {
             console.log(err);
-            // console.log(result);
+            console.log(result);
             res.json({
                 data: "both"
             });
@@ -113,7 +114,7 @@ router.put('/EditNumber', (req, res, next) => {
     var uID = req.body.uID;
     helperMethods.conn().query(selectQuery, [number], (err, result, fields) => {
         console.log(err);
-        //console.log(result);
+        console.log(result);
         if (result.length > 0) {
             res.json({
                 data: "number"
@@ -122,12 +123,12 @@ router.put('/EditNumber', (req, res, next) => {
             helperMethods.conn().query(updateQuery, [number, uID], (err, result, fields) => {
                 console.log(uID);
                 console.log(err);
-                //console.log(result);
+                console.log(result);
                 const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
                 console.log(uID);
                 helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
                     console.log(err);
-                    // console.log(result);
+                     console.log(result);
                     res.json({
                         data: "saved",
                         response: result
@@ -148,7 +149,7 @@ router.put('/EditEmail', (req, res, next) => {
     var uID = req.body.uID;
     helperMethods.conn().query(selectQuery, [email], (err, result, fields) => {
         console.log(err);
-        //console.log(result);
+        console.log(result);
         if (result.length > 0) {
             res.json({
                 data: "email"
@@ -157,12 +158,12 @@ router.put('/EditEmail', (req, res, next) => {
             helperMethods.conn().query(updateQuery, [email, uID], (err, result, fields) => {
                 console.log(uID);
                 console.log(err);
-                //console.log(result);
+                console.log(result);
                 const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
                 console.log(uID);
                 helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
                     console.log(err);
-                    // console.log(result);
+                     console.log(result);
                     res.json({
                         data: "saved",
                         response: result
@@ -181,13 +182,13 @@ router.put('/EditProfile', helperMethods.upload().single('ProfilePicture'), (req
 
     //Check if number and email exists then register 
     helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uID], (err, result, fields) => {
-        //console.log(err);
+        console.log(err);
         const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
         var uID = req.body.uID;
         console.log(uID);
         helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
             console.log(err);
-            //console.log(result);
+            console.log(result);
             res.json({
                 data: "saved",
                 response: result
@@ -203,13 +204,13 @@ router.put('/ChangePassword/:uID', (req, res, next) => {
 
     //Check if number and email exists then register 
     helperMethods.conn().query(updateQuery, [req.body.uPassword, req.params.uID], (err, result, fields) => {
-        //console.log(err);
+        console.log(err);
         const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
         var uID = req.params.uID;
         console.log(uID);
         helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
             console.log(err);
-            //console.log(result);
+            console.log(result);
             res.json({
                 data: "saved",
                 response: result

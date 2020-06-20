@@ -31,10 +31,10 @@ router.post('/', (req, res, next) => {
             var sID = req.body.sID;
             const upQuery = "UPDATE shops SET shops.sLikes = (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.sID = ?) WHERE shops.sID=?;";
             console.log(err);
-            //console.log(result);
+            console.log(result);
             helperMethods.conn().query(upQuery, [sID, sID], (err, result, fields) => {
                 console.log(err);
-                //console.log(result);
+                console.log(result);
                 helperMethods.conn().query("SELECT COUNT(*) AS sLikes FROM `shoplikes` WHERE sID = ?", [sID], (err, rows, fields) => {
                     console.log(err);
                     console.log(rows[0].sLikes);
@@ -59,10 +59,10 @@ router.delete('/:uID/:sID', (req, res, next) => {
             var sID = req.params.sID;
             const upQuery = "UPDATE shops SET shops.sLikes = (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.sID = ?) WHERE shops.sID=?;";
             console.log(err);
-            //console.log(result);
+            console.log(result);
             helperMethods.conn().query(upQuery, [sID, sID], (err, result, fields) => {
                 console.log(err);
-                //console.log(result);
+                console.log(result);
                 helperMethods.conn().query("SELECT COUNT(*) AS sLikes FROM `shoplikes` WHERE sID = ?", [sID], (err, rows, fields) => {
                     console.log(err);
                     console.log(rows[0].sLikes);

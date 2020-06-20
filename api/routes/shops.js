@@ -43,7 +43,7 @@ router.get('/MyShops/:uID', (req, res, next) => {
 router.get('/MenuItems/:sID', (req, res, next) => {
 	helperMethods.conn().query("SELECT * FROM `menuitems` WHERE sID = ? ORDER BY `mPrice` ASC", req.params.sID, (err, rows, fields) => {
 		console.log(err);
-        //console.log(rows);
+        console.log(rows);
         if (rows.length > 0) {
         	res.json({
         		message: "shops",
@@ -61,7 +61,7 @@ router.get('/MenuItems/:sID', (req, res, next) => {
 router.get('/Ingredients/:sID', (req, res, next) => {
 	helperMethods.conn().query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID, req.params.sID], (err, rows, fields) => {
 		console.log(err);
-        // console.log(rows);
+         console.log(rows);
         if (rows.length > 0) {
         	res.json({
         		message: "shops",
@@ -79,7 +79,7 @@ router.get('/Ingredients/:sID', (req, res, next) => {
 router.get('/Extras/:sID', (req, res, next) => {
 	helperMethods.conn().query("SELECT * FROM `extras` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
 		console.log(err);
-        //  console.log(rows);
+          console.log(rows);
         if (rows.length > 0) {
         	res.json({
         		message: "shops",
@@ -124,7 +124,7 @@ router.post('/Register/Ingredient', (req, res, next) => {
 
 		helperMethods.conn().query(selQuery, result.insertId, (err, result, fields) => {
 			console.log(err);
-            //console.log(result);
+            console.log(result);
             res.json({
             	data: "saved",
             	response: result
@@ -141,20 +141,20 @@ router.post('/Register/MenuItem', (req, res, next) => {
 	const selQuery = "SELECT * FROM `menuitems` WHERE mID = ?";
 	helperMethods.conn().query(insQuery, [req.body.mList, req.body.mPrice, req.body.sID], (err, result, fields) => {
 		console.log(err);
-        //        console.log(result);
+                console.log(result);
         var ID = result.insertId;
         helperMethods.conn().query(checkQuesry, [req.body.sID], (err, result, fields) => {
-            //            console.log(result);
+                        console.log(result);
             console.log(err);
             console.log(result[0].nItems);
             if (result[0].nItems == 1) {
             	helperMethods.conn().query(ActivateQuery, req.body.sID, (err, result, fields) => {
             		console.log(err);
             		console.log("isActive activated");
-                    //console.log(result);
+                    console.log(result);
                     helperMethods.conn().query(selQuery, ID, (err, result, fields) => {
                     	console.log(err);
-                        //console.log(result);
+                        console.log(result);
                         res.json({
                         	data: "saved",
                         	response: result
@@ -166,7 +166,7 @@ router.post('/Register/MenuItem', (req, res, next) => {
             	helperMethods.conn().query(selQuery, ID, (err, result, fields) => {
             		console.log("else");
             		console.log(err);
-                    //console.log(result);
+                    console.log(result);
                     res.json({
                     	data: "saved",
                     	response: result
@@ -188,7 +188,7 @@ router.post('/Register/Extra', (req, res, next) => {
 
 		helperMethods.conn().query(selQuery, result.insertId, (err, result, fields) => {
 			console.log(err);
-            //console.log(result);
+            console.log(result);
             res.json({
             	data: "saved",
             	response: result
@@ -203,7 +203,7 @@ router.delete('/Register/Ingredient/:iID', (req, res, next) => {
 
 	helperMethods.conn().query(delQuery, [req.params.iID], (err, result, fields) => {
 		console.log(err);
-        //console.log(result);
+        console.log(result);
         res.json({
         	data: "removed"
         })
@@ -219,12 +219,12 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
 	var sID = req.params.sID;
 	helperMethods.conn().query(delQuery, [req.params.mID], (err, result, fields) => {
 		console.log(err);
-        //        console.log(result);
+               console.log(result);
         if (result == undefined) {
         	res.err("something went wrong please try again")
         } else {
         	helperMethods.conn().query(checkQuesry, [sID], (err, result, fields) => {
-                //   console.log(result);
+                   console.log(result);
                 console.log(err);
                 console.log(result[0].nItems);
                 if (result[0].nItems == 0) {
@@ -232,7 +232,7 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
                 		console.log(sID);
                 		console.log(err);
                 		console.log("isActive deactivated");
-                        //console.log(result);
+                        console.log(result);
                         res.json({
                         	data: "removed",
                         	response: result
@@ -259,13 +259,13 @@ router.delete('/Delete/:sID', (req, res, next) => {
 	var sID = req.params.sID;
 	helperMethods.conn().query(delIngredientsQuery, [req.params.sID], (err, result, fields) => {
 		console.log(err);
-        //        console.log(result);
+                console.log(result);
         helperMethods.conn().query(delLinkQuery,[req.params.sID], (err, result, fields) => {
         	console.log(err);
-            //        console.log(result);
+                    console.log(result);
             helperMethods.conn().query(delShopQuery,[req.params.sID], (err, result, fields) => {
             	console.log(err);
-                //        console.log(result);
+                        console.log(result);
                 res.json({
                 	data: "removed",
                 	response: result
@@ -281,7 +281,7 @@ router.delete('/Register/Extra/:eID', (req, res, next) => {
 
 	helperMethods.conn().query(delQuery, [req.body.eID], (err, result, fields) => {
 		console.log(err);
-        //  console.log(result);
+          console.log(result);
         res.json({
         	data: "removed"
         })
@@ -362,7 +362,7 @@ router.put('/Register/MenuItems/:mID', (req, res, next) => {
 
 	helperMethods.conn().query(putQuery, [req.body.mList, req.body.mPrice, req.params.mID], (err, result, fields) => {
 		console.log(err);
-        // console.log(result);
+         console.log(result);
         res.json({
         	data: "changed"
         })
@@ -375,7 +375,7 @@ router.put('/Register/Extra/:eID', (req, res, next) => {
 
 	helperMethods.conn().query(putQuery, [req.body.eName, req.params.eID], (err, result, fields) => {
 		console.log(err);
-        // console.log(result);
+         console.log(result);
         res.json({
         	data: "saved"
         })
@@ -388,7 +388,7 @@ router.put('/Status/:sID', (req, res, next) => {
 
 	helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
 		console.log(err);
-        //console.log(result);
+    console.log(result);
         res.json({
         	data: "saved"
         })
@@ -401,7 +401,7 @@ router.put('/deactivate/:sID', (req, res, next) => {
 
 	helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
 		console.log(err);
-        // console.log(result);
+         console.log(result);
         res.json({
         	data: "deactivated"
         })
