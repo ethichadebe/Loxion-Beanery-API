@@ -37,6 +37,14 @@ const conn = mysql.createConnection({
     database: 'loxionbeanery'
 });*/
 
+//add zero to signle digit date and times
+function addZero(data) {
+    if (data.length < 2) {
+        return "0" + data;
+    }
+    return data;
+}
+
 module.exports = {
      //Current date time generator
      createdAt: function () {
@@ -49,7 +57,7 @@ module.exports = {
             + addZero("" + currentdate.getSeconds());
 
     },
-    
+
     //Database connection    
     conn: function () {
         return conn;
