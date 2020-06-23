@@ -38,6 +38,18 @@ const conn = mysql.createConnection({
 });*/
 
 module.exports = {
+     //Current date time generator
+     createdAt: function () {
+        var currentdate = new Date();
+        return currentdate.getFullYear() + "-"
+            + addZero("" + (currentdate.getMonth() + 1)) + "-"
+            + addZero("" + currentdate.getDate()) + " "
+            + addZero("" + currentdate.getHours()) + ":"
+            + addZero("" + currentdate.getMinutes()) + ":"
+            + addZero("" + currentdate.getSeconds());
+
+    },
+    
     //Database connection    
     conn: function () {
         return conn;
