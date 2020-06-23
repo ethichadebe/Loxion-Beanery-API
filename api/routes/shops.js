@@ -1,10 +1,7 @@
-const express = require('express');
-const router = express.Router();
 const helperMethods = require('../../util/util');
 
-
 //Returns all shops
-router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
+helperMethods.router().get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
 	helperMethods.conn().query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(shops.sLatitude)) * COS(RADIANS(?)) * COS(RADIANS(shops.sLongitude - ?)) + SIN(RADIANS(shops.sLatitude)) * SIN(RADIANS(?)))))) AS distance FROM shops WHERE shops.isActive = 1 ORDER BY shops.sStatus DESC, distance ASC", [req.params.uID, req.params.sLatitude, req.params.sLongitude, req.params.sLatitude], (err, rows, fields) => {
 		console.log(err);
 		console.log(rows);
@@ -22,7 +19,7 @@ router.get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
 });
 
 //Returns all shops owned by user
-router.get('/MyShops/:uID', (req, res, next) => {
+helperMethods.router().get('/MyShops/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) AND (shops.isActive != 2) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
     	console.log(err);
     	console.log(rows);
@@ -40,7 +37,7 @@ router.get('/MyShops/:uID', (req, res, next) => {
 });
 
 //Returns all Menuitems for each shop
-router.get('/MenuItems/:sID', (req, res, next) => {
+helperMethods.router().get('/MenuItems/:sID', (req, res, next) => {
 	helperMethods.conn().query("SELECT * FROM `menuitems` WHERE sID = ? ORDER BY `mPrice` ASC", req.params.sID, (err, rows, fields) => {
 		console.log(err);
         console.log(rows);
@@ -58,7 +55,7 @@ router.get('/MenuItems/:sID', (req, res, next) => {
 });
 
 //Returns all Ingredients for each shop
-router.get('/Ingredients/:sID', (req, res, next) => {
+helperMethods.router().get('/Ingredients/:sID', (req, res, next) => {
 	helperMethods.conn().query("SELECT ingredients.*, (SELECT COUNT(*) FROM `extras` WHERE sID = ?) AS nExtras FROM `ingredients` WHERE sID = ?", [req.params.sID, req.params.sID], (err, rows, fields) => {
 		console.log(err);
          console.log(rows);
@@ -76,7 +73,7 @@ router.get('/Ingredients/:sID', (req, res, next) => {
 });
 
 //Returns all Extras for each shop
-router.get('/Extras/:sID', (req, res, next) => {
+helperMethods.router().get('/Extras/:sID', (req, res, next) => {
 	helperMethods.conn().query("SELECT * FROM `extras` WHERE sID = ?", [req.params.sID], (err, rows, fields) => {
 		console.log(err);
           console.log(rows);
@@ -94,7 +91,7 @@ router.get('/Extras/:sID', (req, res, next) => {
 });
 
 //Register shop
-router.post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
+helperMethods.router().post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
 	const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sStatus`,`sLikes`,`sOperatingHrs`,`sAddress`,`isActive`,`createdAt`) VALUES (?, ?,?, '"+
 	req.files.sSmallPicture[0].filename + "', '" + req.files.sBigPicture[0].filename + "', ?, ?, 0.0, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
 
@@ -115,7 +112,7 @@ router.post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' 
 });
 
 //Register shop Ingredients
-router.post('/Register/Ingredient', (req, res, next) => {
+helperMethods.router().post('/Register/Ingredient', (req, res, next) => {
 	const insQuery = "INSERT INTO ingredients(`iName`,`iPrice`,`sID`,`isActive`,`createdAt`) VALUES (?, ?, ?, 1, '" + helperMethods.createdAt() + "')";
 
 	helperMethods.conn().query(insQuery, [req.body.iName, req.body.iPrice, req.body.sID], (err, result, fields) => {
@@ -134,7 +131,7 @@ router.post('/Register/Ingredient', (req, res, next) => {
 });
 
 //Register shop Menu items
-router.post('/Register/MenuItem', (req, res, next) => {
+helperMethods.router().post('/Register/MenuItem', (req, res, next) => {
 	const insQuery = "INSERT INTO `menuitems` (`mList`, `mPrice`, `isActive`, `sID`, `createdAt`) VALUES (?, ?, '0', ?, '" + helperMethods.createdAt() + "')";
 	const checkQuesry = "SELECT COUNT(menuitems.sID) AS nItems FROM menuitems WHERE menuitems.sID = ?";
 	const ActivateQuery = "UPDATE `shops` SET `isActive` = '1' WHERE `shops`.`sID` = ?;";
@@ -180,7 +177,7 @@ router.post('/Register/MenuItem', (req, res, next) => {
 });
 
 //Register shop Extras
-router.post('/Register/Extra', (req, res, next) => {
+helperMethods.router().post('/Register/Extra', (req, res, next) => {
 	const insQuery = "INSERT INTO extras(`eName`,`isActive`,`sID`,`createdAt`) VALUES (?, 1,?, '" + helperMethods.createdAt() + "')";
 
 	helperMethods.conn().query(insQuery, [req.body.eName, req.body.sID], (err, result, fields) => {
@@ -198,7 +195,7 @@ router.post('/Register/Extra', (req, res, next) => {
 });
 
 //Delete shop Ingredients
-router.delete('/Register/Ingredient/:iID', (req, res, next) => {
+helperMethods.router().delete('/Register/Ingredient/:iID', (req, res, next) => {
 	const delQuery = "DELETE FROM `ingredients` WHERE `ingredients`.`iID` = ?";
 
 	helperMethods.conn().query(delQuery, [req.params.iID], (err, result, fields) => {
@@ -211,7 +208,7 @@ router.delete('/Register/Ingredient/:iID', (req, res, next) => {
 });
 
 //Delete shop Menu items
-router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
+helperMethods.router().delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
 	const delQuery = "DELETE FROM `menuitems` WHERE `menuitems`.`mID` = ?";
 	const DeactivateQuery = "UPDATE `shops` SET `isActive` = '0' WHERE `shops`.`sID` = ?;";
 	const checkQuesry = "SELECT COUNT(menuitems.sID) AS nItems FROM menuitems WHERE menuitems.sID = ?";
@@ -251,7 +248,7 @@ router.delete('/Register/MenuItem/:mID/:sID', (req, res, next) => {
 });
 
 //Delete shop
-router.delete('/Delete/:sID', (req, res, next) => {
+helperMethods.router().delete('/Delete/:sID', (req, res, next) => {
 	const delShopQuery = "DELETE FROM `shops` WHERE `shops`.`sID` = ?";
 	const delLinkQuery = "DELETE FROM `ingredients` WHERE `ingredients`.`sID` = ?";
 	const delIngredientsQuery = "DELETE FROM `usershopbridge` WHERE `usershopbridge`.`sID` = ?";
@@ -276,7 +273,7 @@ router.delete('/Delete/:sID', (req, res, next) => {
 });
 
 //Delete shop Extras
-router.delete('/Register/Extra/:eID', (req, res, next) => {
+helperMethods.router().delete('/Register/Extra/:eID', (req, res, next) => {
 	const delQuery = "DELETE FROM `extras` WHERE `extras`.`eID` = ?";
 
 	helperMethods.conn().query(delQuery, [req.body.eID], (err, result, fields) => {
@@ -289,7 +286,7 @@ router.delete('/Register/Extra/:eID', (req, res, next) => {
 });
 
 //Put shop
-router.put('/Register/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]),(req, res, next) => {
+helperMethods.router().put('/Register/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]),(req, res, next) => {
 	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].filename + "', `sBigPicture` =  '" + req.files.sBigPicture[0].filename + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
@@ -302,7 +299,7 @@ router.put('/Register/:sID', helperMethods.upload().fields([{ name: 'sSmallPictu
 		});
 });
 //Put shop
-router.put('/CompleteRegister/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]),(req, res, next) => {
+helperMethods.router().put('/CompleteRegister/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]),(req, res, next) => {
 	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].filename + "', `sBigPicture` =  '" + req.files.sBigPicture[0].filename + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ?, `sOperatingHrs` = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
@@ -318,7 +315,7 @@ router.put('/CompleteRegister/:sID', helperMethods.upload().fields([{ name: 'sSm
 });
 
 //Put operating hours
-router.put('/Register/OH/:sID', (req, res, next) => {
+helperMethods.router().put('/Register/OH/:sID', (req, res, next) => {
 	const putQuery = "UPDATE shops SET `sOperatingHrs` = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
@@ -331,7 +328,7 @@ router.put('/Register/OH/:sID', (req, res, next) => {
 });
 
 //Put shop Ingredients
-router.put('/Register/Ingredient/:iID/:sID', (req, res, next) => {
+helperMethods.router().put('/Register/Ingredient/:iID/:sID', (req, res, next) => {
 	var newName = req.body.iName;
 	var oldName = req.body.iPrevious;
 	var newPrice = req.body.iPrice;
@@ -357,7 +354,7 @@ router.put('/Register/Ingredient/:iID/:sID', (req, res, next) => {
 });
 
 //Put shop Menu items
-router.put('/Register/MenuItems/:mID', (req, res, next) => {
+helperMethods.router().put('/Register/MenuItems/:mID', (req, res, next) => {
 	const putQuery = "UPDATE menuitems SET mList = ?, mPrice = ? WHERE mID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.mList, req.body.mPrice, req.params.mID], (err, result, fields) => {
@@ -370,7 +367,7 @@ router.put('/Register/MenuItems/:mID', (req, res, next) => {
 });
 
 //Put shop Extras
-router.put('/Register/Extra/:eID', (req, res, next) => {
+helperMethods.router().put('/Register/Extra/:eID', (req, res, next) => {
 	const putQuery = "UPDATE extras SET eName = ? WHERE eID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.eName, req.params.eID], (err, result, fields) => {
@@ -383,7 +380,7 @@ router.put('/Register/Extra/:eID', (req, res, next) => {
 });
 
 //Put shop Status
-router.put('/Status/:sID', (req, res, next) => {
+helperMethods.router().put('/Status/:sID', (req, res, next) => {
 	const putQuery = "UPDATE shops SET sStatus = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
@@ -396,7 +393,7 @@ router.put('/Status/:sID', (req, res, next) => {
 });
 
 //Deactivate Shop
-router.put('/deactivate/:sID', (req, res, next) => {
+helperMethods.router().put('/deactivate/:sID', (req, res, next) => {
 	const putQuery = "UPDATE shops SET isActive = 2 WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
@@ -408,4 +405,4 @@ router.put('/deactivate/:sID', (req, res, next) => {
     });
 });
 
-module.exports = router;
+module.exports = helperMethods.router();

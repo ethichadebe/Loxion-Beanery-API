@@ -1,10 +1,7 @@
-const express = require('express');
-const router = express.Router();
 const helperMethods = require('../../util/util');
 
-
 //Returns all users
-router.get('/', (req, res, next) => {
+helperMethods.router().get('/', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM users", (err, result, fields) => {
         console.log(err)
         console.log(result)
@@ -15,7 +12,7 @@ router.get('/', (req, res, next) => {
 });
 
 //Change Password
-router.get('/CheckPassword/:uID/:uPassword', (req, res, next) => {
+helperMethods.router().get('/CheckPassword/:uID/:uPassword', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM users WHERE uID=? AND uPassword=?", [req.params.uID, req.params.uPassword], (err, rows, fields) => {
         if (rows.length > 0) {
             res.json({
@@ -30,7 +27,7 @@ router.get('/CheckPassword/:uID/:uPassword', (req, res, next) => {
 });
 
 //Returns a specific user 
-router.post('/Login', (req, res) => {
+helperMethods.router().post('/Login', (req, res) => {
     const selectQuery = "SELECT * FROM `users` WHERE (`uNumber` = ? AND `uPassword` = ?)";
     helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uPassword], (err, result, fields) => {
         console.log(err)
@@ -48,7 +45,7 @@ router.post('/Login', (req, res) => {
 });
 
 //New user registration 
-router.post('/Register', (req, res, next) => {
+helperMethods.router().post('/Register', (req, res, next) => {
     console.log(req.file);
     const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uDOB`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`uType`,`isActive`, `createdAt`) VALUES (?, ?,?, ?, ?, ?,?,?,1, '" + helperMethods.createdAt() + "')";
 
@@ -64,7 +61,7 @@ router.post('/Register', (req, res, next) => {
 });
 
 //Check if password and email exist
-router.post('/CheckStuff', (req, res) => {
+helperMethods.router().post('/CheckStuff', (req, res) => {
     const selectQuery = "SELECT * FROM users WHERE uNumber = ? AND uEmail = ?";
     const selectQuery1 = "SELECT * FROM users WHERE uNumber = ?";
     const selectQuery2 = "SELECT * FROM users WHERE uEmail = ?";
@@ -105,7 +102,7 @@ router.post('/CheckStuff', (req, res) => {
 });
 
 //Update user Number
-router.put('/EditNumber', (req, res, next) => {
+helperMethods.router().put('/EditNumber', (req, res, next) => {
     const updateQuery = "UPDATE users SET uNumber = ? WHERE uID = ?";
     const selectQuery = "SELECT * FROM users WHERE uNumber = ?";
 
@@ -140,7 +137,7 @@ router.put('/EditNumber', (req, res, next) => {
 });
 
 //Update user Email
-router.put('/EditEmail', (req, res, next) => {
+helperMethods.router().put('/EditEmail', (req, res, next) => {
     const updateQuery = "UPDATE users SET uEmail = ? WHERE uID = ?";
     const selectQuery = "SELECT * FROM users WHERE uEmail = ?";
 
@@ -175,7 +172,7 @@ router.put('/EditEmail', (req, res, next) => {
 });
 
 //Update user information
-router.put('/EditProfile', helperMethods.upload().single('ProfilePicture'), (req, res, next) => {
+helperMethods.router().put('/EditProfile', helperMethods.upload().single('ProfilePicture'), (req, res, next) => {
     console.log(req.file);
     const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uPicture = '" + req.file.filename + "' WHERE uID = ?";
 
@@ -199,7 +196,7 @@ router.put('/EditProfile', helperMethods.upload().single('ProfilePicture'), (req
 });
 
 //Update user password
-router.put('/ChangePassword/:uID', (req, res, next) => {
+helperMethods.router().put('/ChangePassword/:uID', (req, res, next) => {
     const updateQuery = "UPDATE users SET uPassword = ? WHERE uID = ?";
 
     //Check if number and email exists then register 
@@ -219,4 +216,4 @@ router.put('/ChangePassword/:uID', (req, res, next) => {
     });
 
 });
-module.exports = router;
+module.exports = helperMethods.router();

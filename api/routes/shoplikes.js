@@ -1,29 +1,6 @@
-const express = require('express');
-const router = express.Router();
 const helperMethods = require('../../util/util');
 
-
-//add zero to signle digit date and times
-function addZero(data) {
-    if (data.length < 2) {
-        return "0" + data;
-    }
-    return data;
-}
-
-//Current date time generator
-function createdAt() {
-    var currentdate = new Date();
-    return currentdate.getFullYear() + "-"
-        + addZero("" + (currentdate.getMonth() + 1)) + "-"
-        + addZero("" + currentdate.getDate()) + " "
-        + addZero("" + currentdate.getHours()) + ":"
-        + addZero("" + currentdate.getMinutes()) + ":"
-        + addZero("" + currentdate.getSeconds());
-
-}
-
-router.post('/', (req, res, next) => {
+helperMethods.router().post('/', (req, res, next) => {
     const insQuery = "INSERT INTO shoplikes(sID, uID) VALUES (?,?);";
 
     helperMethods.conn().query(insQuery, [req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
@@ -51,7 +28,7 @@ router.post('/', (req, res, next) => {
     });
 });
 
-router.delete('/:uID/:sID', (req, res, next) => {
+helperMethods.router().delete('/:uID/:sID', (req, res, next) => {
     const delQuery = "DELETE FROM `shoplikes` WHERE `sID` = ? AND `uID` = ?;";
 
     helperMethods.conn().query(delQuery, [req.params.sID, req.params.uID, req.params.sID], (err, result, fields) => {
@@ -79,5 +56,4 @@ router.delete('/:uID/:sID', (req, res, next) => {
     });
 });
 
-
-module.exports = router;
+module.exports = helperMethods.router();

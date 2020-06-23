@@ -56,7 +56,7 @@ router.get('/AdminPastOrders/:sID', (req, res, next) => {
 router.get('/shopPast/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
-                console.log(rows);
+        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -73,7 +73,7 @@ router.get('/shopPast/:sID', (req, res, next) => {
 router.get('/shopUpcoming/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =?)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
-                console.log(rows);
+        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -125,13 +125,31 @@ router.get('/Upcoming/:uID', (req, res, next) => {
 //Place ordere
 router.post('/Order', (req, res, next) => {
     const insQuery = "INSERT INTO orders(`oIngredients`,`oExtras`,`oPrice`, `sID`,`uID`,`createdAt`) VALUES (?, ?, ?, ?, ?, '" + helperMethods.createdAt() + "')";
-
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID], (err, result, fields) => {
         console.log(err);
-        console.log(result.insertId);
-        res.json({
-            data: result.insertId
-        })
+        if (!err) {
+            const insertedID = result.insertId;
+            const selQuery = "SELECT * FROM orders WHERE oID = " + insertedID;
+            helperMethods.conn().query(selQuery, (err, result, fields) => {
+                console.log(err);
+                if (!err) {
+                    console.log(result);
+                    //Prepare notification
+                    const topic = {
+                        topic: '/topics/' + "shop ID",
+                        notification: {
+                            "title": "Order #13",
+                            "body": "Not sure yet what to put here",
+                            "click_action": "OPEN_ACTIVITY_1"
+                        },
+                        data: data
+                    };;
+
+                    //Send notification
+                    helperMethods.sendNotification(message, res.json({ data: insertedID }));
+                }
+            });
+        }
     });
 });
 
@@ -154,7 +172,7 @@ router.put('/Ready/:oID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-         console.log(result);
+        console.log(result);
         res.json({
             data: "updated"
         })
@@ -180,7 +198,7 @@ router.put('/Collected/:oID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-         console.log(result);
+        console.log(result);
         res.json({
             data: "Canceled"
         })
