@@ -124,7 +124,7 @@ router.get('/Upcoming/:uID', (req, res, next) => {
 
 //Place ordere
 router.post('/Order', (req, res, next) => {
-    const insQuery = "INSERT INTO orders(`oIngredients`,`oExtras`,`oPrice`, `sID`,`uID`,`createdAt`) VALUES (?, ?, ?, ?, ?, '" + helperMethods.createdAt() + "')";
+    const insQuery = "INSERT INTO orders(`oIngredients`,`oExtras`,`oPrice`, `sID`,`uID`) VALUES (?, ?, ?, ?, ?)";
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID], (err, result, fields) => {
         console.log(err);
         if (!err) {
@@ -135,14 +135,14 @@ router.post('/Order', (req, res, next) => {
                 if (!err) {
                     console.log(result);
                     //Prepare notification
-                    const topic = {
+                    const message = {
                         topic: '/topics/' + "shop ID",
                         notification: {
                             "title": "Order #13",
                             "body": "Not sure yet what to put here",
                             "click_action": "OPEN_ACTIVITY_1"
                         },
-                        data: data
+                        data: result
                     };;
 
                     //Send notification
