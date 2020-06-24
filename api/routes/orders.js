@@ -135,6 +135,7 @@ router.post('/Order', (req, res, next) => {
             helperMethods.conn().query(selQuery, (err, result, fields) => {
                 console.log(err);
                 if (!err) {
+                    console.log("new order");
                     console.log(result);
                     //Prepare notification
                     const message = {
