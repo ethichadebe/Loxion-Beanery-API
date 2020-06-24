@@ -146,7 +146,7 @@ router.post('/Order', (req, res, next) => {
                             "click_action": "OPEN_ACTIVITY_1"
                         },
                         "data": {
-                            "oNumber": result[0].oNumber,
+                            "oNumber": "order: #"+result[0].oNumber,
                             "order": "R" + result[0].oPrice + " " + result[0].oIngredients
                         }
                     };;
