@@ -140,16 +140,20 @@ router.post('/Order', (req, res, next) => {
                     //Prepare notification
                     const message = {
                         "token":"d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
-                        "notification": {
-                            "title": "Order #13",
-                            "body": "Not sure yet what to put here"
-                           // "click_action": "OPEN_ACTIVITY_1"
+                        "android":{
+                            "ttl":"86400s",
+                            "notification":{
+                                "title": "Order #13",
+                                "body": "Not sure yet what to put here"
+              //"click_action":"OPEN_ACTIVITY_1"
+                            }
                         },
+
                         "data": {
                             "oNumber": "order: #"+result[0].oNumber,
                             "order": "R" + result[0].oPrice + " " + result[0].oIngredients
                         }
-                    };;
+                    };
 
                     //Send notification
                     helperMethods.sendNotification(message, res.json({ data: insertedID }));
