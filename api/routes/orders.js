@@ -139,7 +139,7 @@ router.post('/Order', (req, res, next) => {
                     console.log(result[0]);
                     //Prepare notification
                     const message = {
-                        "token": "d7aQZEHUT1149mbvsXXt8l:APA91BH7JS1U!9bloOT-TPMZ- V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK607he_BpOpaN1tzEWsYliviQ3jWBrRMr- V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_P2DBWNE9G_rTm",
+                        "token":"d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm"
                         "notification": {
                             "title": "Order #13",
                             "body": "Not sure yet what to put here"
