@@ -149,6 +149,14 @@ router.post('/Order', (req, res, next) => {
                         },
 
                         "data": {
+                            "oID": result[0].oID,
+                            "oIngredients": result[0].oIngredients,
+                            "oExtras": result[0].oExtras,
+                            "oPrice": result[0].oPrice,
+                            "oRating": result[0].oRating,
+                            "oNumber": result[0].oNumber,
+                            "sID": result[0].sID,
+                            "uID": result[0].uID
                         }
                     };
 
