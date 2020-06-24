@@ -124,7 +124,6 @@ router.get('/Upcoming/:uID', (req, res, next) => {
 
 //Place order
 router.post('/Order', (req, res, next) => {
-
     const insQuery = "INSERT INTO orders(`oIngredients`, `oExtras`, `oPrice`, `oNumber`, `sID`, `uID`, `createdAt`) SELECT ?, ?, ?, COUNT(*)+1, ?, ?, '" + helperMethods.createdAt() + "' FROM orders WHERE DAY(orders.createdAt) = DAY(CURRENT_DATE) AND orders.sID = ?";
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         console.log(err);
@@ -214,7 +213,7 @@ router.put('/Cancel/:oID', (req, res, next) => {
 
 //Collected order
 router.put('/Collected/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Collected' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Collected' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
