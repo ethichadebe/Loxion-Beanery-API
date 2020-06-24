@@ -143,8 +143,8 @@ router.post('/Order', (req, res, next) => {
                         "android": {
                             "notification": {
                                 "title": "Order #13",
-                                "body": "Ayispani lento"
-                                //"click_action":"OPEN_ACTIVITY_1"
+                                "body": "Ayispani lento",
+                                "click_action":"OPEN_ACTIVITY_1"
                             }
                         },
 
