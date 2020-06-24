@@ -4,7 +4,12 @@ const express = require('express');
 const firebase = require('firebase-admin');
 const router = express.Router();
 
-firebase.initializeApp();
+var serviceAccount = require("service_account.json");
+
+firebase.initializeApp({
+  credential: firebase.credential.cert(serviceAccount),
+  databaseURL: "https://loxion-beanery-78c17.firebaseio.com"
+});
 
 //Image uploader
 const storage = multer.diskStorage({
