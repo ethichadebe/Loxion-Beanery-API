@@ -51,7 +51,7 @@ module.exports = {
         var currentdate = new Date();
         return currentdate.getFullYear() + "-"
             + addZero("" + (currentdate.getMonth() + 1)) + "-"
-            + addZero("" + (currentdate.getDate()+1)) + " "
+            + addZero("" + currentdate.getDate()) + " "
             + addZero("" + currentdate.getHours()) + ":"
             + addZero("" + currentdate.getMinutes()) + ":"
             + addZero("" + currentdate.getSeconds());

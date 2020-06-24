@@ -122,7 +122,7 @@ router.get('/Upcoming/:uID', (req, res, next) => {
     });
 });
 
-//Place ordere
+//Place order
 router.post('/Order', (req, res, next) => {
 
     const insQuery = "INSERT INTO orders(`oIngredients`, `oExtras`, `oPrice`, `oNumber`, `sID`, `uID`, `createdAt`) SELECT ?, ?, ?, COUNT(*)+1, ?, ?, '" + helperMethods.createdAt() + "' FROM orders WHERE DAY(orders.createdAt) = DAY(CURRENT_DATE) AND orders.sID = ?";
@@ -174,10 +174,16 @@ router.put('/Ready/:oID', (req, res, next) => {
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
         console.log(result);
-        res.json({
-            data: "updated"
-        })
-    });
+        const putQuery = "UPDATE shops SET sAveTime = (SELECT AVG(TIMEDIFF(TIME(orders.oFinishedAt) , TIME(orders.createdAt)))/60 AS sAveTime FROM orders WHERE orders.sID = 2) sID = 2";
+
+        helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
+            console.log(err);
+            console.log(result);
+            res.json({
+                data: "updated"
+            })
+        });
+        });
 });
 
 //Cancel order
