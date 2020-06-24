@@ -142,8 +142,8 @@ router.post('/Order', (req, res, next) => {
                         "token": "d7aQZEHUT1149mbvsXXt8l:APA91BH7JS1U!9bloOT-TPMZ- V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK607he_BpOpaN1tzEWsYliviQ3jWBrRMr- V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_P2DBWNE9G_rTm",
                         "notification": {
                             "title": "Order #13",
-                            "body": "Not sure yet what to put here",
-                            "click_action": "OPEN_ACTIVITY_1"
+                            "body": "Not sure yet what to put here"
+                           // "click_action": "OPEN_ACTIVITY_1"
                         },
                         "data": {
                             "oNumber": "order: #"+result[0].oNumber,
