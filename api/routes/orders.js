@@ -129,13 +129,13 @@ router.post('/Order', (req, res, next) => {
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         console.log(err);
         if (!err) {
-            console.log("new order: "+result);
+        console.log(result);
             const insertedID = result.insertId;
             const selQuery = "SELECT * FROM orders WHERE oID = " + insertedID;
             helperMethods.conn().query(selQuery, (err, result, fields) => {
                 console.log(err);
                 if (!err) {
-                    console.log("return order: "+result);
+                    console.log(result);
                     //Prepare notification
                     const message = {
                         token: "d7aQZEHUT1149mbvsXXt8l:APA91BH7JS1U!9bloOT-TPMZ- V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK607he_BpOpaN1tzEWsYliviQ3jWBrRMr- V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_P2DBWNE9G_rTm",
