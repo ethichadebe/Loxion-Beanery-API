@@ -129,14 +129,14 @@ router.post('/Order', (req, res, next) => {
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         console.log(err);
         if (!err) {
-        console.log(result);
+            console.log(result);
             const insertedID = result.insertId;
             const selQuery = "SELECT * FROM orders WHERE oID = " + insertedID;
             helperMethods.conn().query(selQuery, (err, result, fields) => {
                 console.log(err);
                 if (!err) {
                     console.log("new order");
-                    console.log(result[0].RowDataPacket);
+                    console.log(result[0]);
                     //Prepare notification
                     const message = {
                         token: "d7aQZEHUT1149mbvsXXt8l:APA91BH7JS1U!9bloOT-TPMZ- V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK607he_BpOpaN1tzEWsYliviQ3jWBrRMr- V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_P2DBWNE9G_rTm",
@@ -145,7 +145,10 @@ router.post('/Order', (req, res, next) => {
                             "body": "Not sure yet what to put here",
                             "click_action": "OPEN_ACTIVITY_1"
                         },
-                        data: result[0]
+                        data: {
+                            "oNumber": result[0].oNumber,
+                            "order": "R" + result[0].oPrice + " " + result[0].oIngredients
+                        }
                     };;
 
                     //Send notification
@@ -185,7 +188,7 @@ router.put('/Ready/:oID', (req, res, next) => {
                 data: "updated"
             })
         });
-        });
+    });
 });
 
 //Cancel order
