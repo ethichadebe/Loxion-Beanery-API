@@ -4,6 +4,51 @@ const router = express.Router();
 const helperMethods = require('../../util/util');
 
 
+//Place order
+router.post('/Order', (req, res, next) => {
+    const insQuery = "INSERT INTO orders(`oIngredients`, `oExtras`, `oPrice`, `oNumber`, `sID`, `uID`, `createdAt`) SELECT ?, ?, ?, COUNT(*)+1, ?, ?, '" + helperMethods.createdAt() + "' FROM orders WHERE DAY(orders.createdAt) = DAY(CURRENT_DATE) AND orders.sID = ?";
+    helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
+        console.log(err);
+        if (!err) {
+            console.log(result);
+            const insertedID = result.insertId;
+            const selQuery = "SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = " + insertedID;
+            helperMethods.conn().query(selQuery, (err, result, fields) => {
+                console.log(err);
+                if (!err) {
+                    console.log("new order");
+                    console.log(result[0]);
+                    //Prepare notification
+                    //TODO: set topic to anyone subscribed to the shop ID
+                    const message = {
+                        "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
+                        "android": {
+                            "notification": {
+                                "title": "Order: #" + result[0].oNumber,
+                                "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
+                                "click_action": "OPEN_ACTIVITY_1"
+                            }
+                        },
+
+                        "data": {
+                            "oID": "" + result[0].oID,
+                            "oIngredients": result[0].oIngredients,
+                            "oExtras": result[0].oExtras,
+                            "oPrice": "" + result[0].oPrice,
+                            "oNumber": "" + result[0].oNumber,
+                            "sID": "" + result[0].sID,
+                            "uID": "" + result[0].uID
+                        }
+                    };
+
+                    //Send notification
+                    helperMethods.sendNotification(message, res.json({ data: result[0] }));
+                }
+            });
+        }
+    });
+});
+
 //Returns all orders
 router.get('/', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM `orders`", (err, rows, fields) => {
@@ -122,79 +167,100 @@ router.get('/Upcoming/:uID', (req, res, next) => {
     });
 });
 
-//Place order
-router.post('/Order', (req, res, next) => {
-    const insQuery = "INSERT INTO orders(`oIngredients`, `oExtras`, `oPrice`, `oNumber`, `sID`, `uID`, `createdAt`) SELECT ?, ?, ?, COUNT(*)+1, ?, ?, '" + helperMethods.createdAt() + "' FROM orders WHERE DAY(orders.createdAt) = DAY(CURRENT_DATE) AND orders.sID = ?";
-    helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
-        console.log(err);
-        if (!err) {
-            console.log(result);
-            const insertedID = result.insertId;
-            const selQuery = "SELECT * FROM orders WHERE oID = " + insertedID;
-            helperMethods.conn().query(selQuery, (err, result, fields) => {
-                console.log(err);
-                if (!err) {
-                    console.log("new order");
-                    console.log(result[0]);
-                    //Prepare notification
-                    const message = {
-                        "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
-                        "android": {
-                            "notification": {
-                                "title": "order: #" + result[0].oNumber,
-                                "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
-                                "click_action": "OPEN_ACTIVITY_1"
-                            }
-                        },
-
-                        "data": {
-                            "oID": ""+result[0].oID,
-                            "oIngredients": result[0].oIngredients,
-                            "oExtras": result[0].oExtras,
-                            "oPrice": ""+result[0].oPrice,
-                            "oNumber": ""+result[0].oNumber,
-                            "sID": ""+result[0].sID,
-                            "uID": ""+result[0].uID
-                        }
-                    };
-
-                    //Send notification
-                    helperMethods.sendNotification(message, res.json({ data: insertedID }));
-                }
-            });
-        }
-    });
-});
-
 //Send order to shop
 router.put('/Arrived/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oRecievedAt = '" + helperMethods.createdAt() + "', oStatus = 'Waiting for order' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
-        res.json({
-            data: "updated"
-        })
+        const selQuery = "SELECT * FROM orders WHERE oID = " + insertedID;
+        helperMethods.conn().query(selQuery, (err, result, fields) => {
+            console.log(err);
+            if (!err) {
+                console.log("new order");
+                console.log(result[0]);
+                //Prepare notification
+                //TODO: set topic to anyone subscribed to the shop ID
+                const message = {
+                    "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
+                    "android": {
+                        "notification": {
+                            "title": "Order: #" + result[0].oNumber,
+                            "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
+                            "click_action": "OPEN_ACTIVITY_1"
+                        }
+                    },
+
+                    "data": {
+                        "oID": "" + result[0].oID,
+                        "oIngredients": result[0].oIngredients,
+                        "oExtras": result[0].oExtras,
+                        "oPrice": "" + result[0].oPrice,
+                        "oNumber": "" + result[0].oNumber,
+                        "sID": "" + result[0].sID,
+                        "uID": "" + result[0].uID
+                    }
+                };
+
+                //Send notification
+                helperMethods.sendNotification(message, res.json({ data: "updated" }));
+            }
+        });
     });
 });
 
 //Order Complete to shop
-router.put('/Ready/:oID', (req, res, next) => {
+router.put('/Ready/:oID/:sID', (req, res, next) => {
+    //Set order status to collected
     const putQuery = "UPDATE orders SET oFinishedAt = '" + helperMethods.createdAt() + "', oStatus = 'Ready for collection' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
-        const putQuery = "UPDATE shops SET sAveTime = (SELECT AVG(TIMEDIFF(TIME(orders.oFinishedAt) , TIME(orders.createdAt)))/60 AS sAveTime FROM orders WHERE orders.sID = 2) sID = 2";
-
-        helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
-            console.log(err);
+        if (!err) {
             console.log(result);
-            res.json({
-                data: "updated"
-            })
-        });
+            //Update shop average preparation time
+            const putQuery = "UPDATE shops SET sAveTime = (SELECT AVG(TIMEDIFF(TIME(orders.oFinishedAt) , TIME(orders.createdAt)))/60 AS sAveTime FROM orders WHERE orders.sID = ?) sID = ?";
+
+            helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
+                console.log(err);
+                if (!err) {
+                    const selQuery = "SELECT * FROM orders WHERE oID = ?";
+
+                    helperMethods.conn().query(selQuery, [req.params.oID], (err, result, fields) => {
+                        console.log(err);
+                        if (!err) {
+                            console.log("new order");
+                            console.log(result[0]);
+                            //Prepare notification
+                            //TODO: set topic to customer
+                            const message = {
+                                "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
+                                "android": {
+                                    "notification": {
+                                        "title": "Order: #" + result[0].oNumber,
+                                        "body": "Your order is ready for collection",
+                                        "click_action": "OPEN_ACTIVITY_1"
+                                    }
+                                },
+
+                                "data": {
+                                    "oID": "" + result[0].oID,
+                                    "oIngredients": result[0].oIngredients,
+                                    "oExtras": result[0].oExtras,
+                                    "oPrice": "" + result[0].oPrice,
+                                    "oNumber": "" + result[0].oNumber,
+                                    "sID": "" + result[0].sID,
+                                    "uID": "" + result[0].uID
+                                }
+                            };
+
+                            //Send notification
+                            helperMethods.sendNotification(message, res.json({ data: insertedID }));
+                        }
+                    });
+                }
+            });
+        }
     });
 });
 
