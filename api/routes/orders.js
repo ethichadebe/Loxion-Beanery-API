@@ -324,4 +324,4 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
     });
 });
 
-module.exports = router;
+module.exports = helperMethods.router();
