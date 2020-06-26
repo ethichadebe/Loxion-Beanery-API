@@ -26,7 +26,7 @@ router.post('/Order', (req, res, next) => {
                             "notification": {
                                 "title": "Order: #" + result[0].oNumber,
                                 "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
-                                "click_action": "OPEN_ACTIVITY_1"
+                                "click_action": "OrdersActivity"
                             }
                         },
 
