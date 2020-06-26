@@ -1,19 +1,15 @@
-const express = require('express');
-const router = express.Router();
-
 const helperMethods = require('../../util/util');
 
-
 //Place order
-router.post('/Order', (req, res, next) => {
+helperMethods.router().post('/Order', (req, res, next) => {
     const insQuery = "INSERT INTO orders(`oIngredients`, `oExtras`, `oPrice`, `oNumber`, `sID`, `uID`, `createdAt`) SELECT ?, ?, ?, COUNT(*)+1, ?, ?, '" + helperMethods.createdAt() + "' FROM orders WHERE DAY(orders.createdAt) = DAY(CURRENT_DATE) AND orders.sID = ?";
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         console.log(err);
         if (!err) {
             console.log(result);
             const insertedID = result.insertId;
-            const selQuery = "SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = " + insertedID;
-            helperMethods.conn().query(selQuery, (err, result, fields) => {
+            const selQuery = "SELECT shops.*,(SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders, orders.* FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = ?";
+            helperMethods.conn().query(selQuery, insertedID, (err, result, fields) => {
                 console.log(err);
                 if (!err) {
                     console.log("new order");
@@ -31,13 +27,13 @@ router.post('/Order', (req, res, next) => {
                         },
 
                         "data": {
-                            "oID": "" + result[0].oID,
-                            "oIngredients": result[0].oIngredients,
-                            "oExtras": result[0].oExtras,
-                            "oPrice": "" + result[0].oPrice,
-                            "oNumber": "" + result[0].oNumber,
                             "sID": "" + result[0].sID,
-                            "uID": "" + result[0].uID
+                            "oID": "" + result[0].oID,
+                            "sLatitude": "" + result[0].sLatitude,
+                            "sLongitude": "" + result[0].sLongitude,
+                            "isActive": "" + result[0].isActive,
+                            "sStatus": "" + result[0].sStatus,
+                            "sAveTime": result[0].sAveTime,
                         }
                     };
 
@@ -50,7 +46,7 @@ router.post('/Order', (req, res, next) => {
 });
 
 //Returns all orders
-router.get('/', (req, res, next) => {
+helperMethods.router().get('/', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM `orders`", (err, rows, fields) => {
         console.log(err);
         console.log(rows);
@@ -62,7 +58,7 @@ router.get('/', (req, res, next) => {
 });
 
 //Returns all orders for a specific shop
-router.get('/:sID', (req, res, next) => {
+helperMethods.router().get('/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM orders WHERE sID = ? AND (orders.oStatus = 'Waiting for order' OR orders.oStatus = 'Ready for collection')", req.params.sID, (err, rows, fields) => {
         console.log(err);
         console.log(rows);
@@ -80,7 +76,7 @@ router.get('/:sID', (req, res, next) => {
 });
 
 //Returns all past orders for a specific shop
-router.get('/AdminPastOrders/:sID', (req, res, next) => {
+helperMethods.router().get('/AdminPastOrders/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Collected'", req.params.sID, (err, rows, fields) => {
         console.log(err);
         console.log(rows);
@@ -98,7 +94,7 @@ router.get('/AdminPastOrders/:sID', (req, res, next) => {
 });
 
 //Returns all passed orders for a specific shop
-router.get('/shopPast/:sID', (req, res, next) => {
+helperMethods.router().get('/shopPast/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
@@ -115,7 +111,7 @@ router.get('/shopPast/:sID', (req, res, next) => {
 });
 
 //Returns all upcoming orders for a specific shop
-router.get('/shopUpcoming/:sID', (req, res, next) => {
+helperMethods.router().get('/shopUpcoming/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =?)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
@@ -132,7 +128,7 @@ router.get('/shopUpcoming/:sID', (req, res, next) => {
 });
 
 //Returns all Past orders for a specific user
-router.get('/Past/:uID', (req, res, next) => {
+helperMethods.router().get('/Past/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
@@ -150,7 +146,7 @@ router.get('/Past/:uID', (req, res, next) => {
 });
 
 //Returns all Upcoming orders for a specific user
-router.get('/Upcoming/:uID', (req, res, next) => {
+helperMethods.router().get('/Upcoming/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.createdAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
@@ -168,7 +164,7 @@ router.get('/Upcoming/:uID', (req, res, next) => {
 });
 
 //Send order to shop
-router.put('/Arrived/:oID', (req, res, next) => {
+helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oRecievedAt = '" + helperMethods.createdAt() + "', oStatus = 'Waiting for order' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
@@ -230,7 +226,7 @@ router.put('/Arrived/:oID', (req, res, next) => {
 });
 
 //Order Complete to shop
-router.put('/Ready/:oID/:sID', (req, res, next) => {
+helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
     //Set order status to collected
     const putQuery = "UPDATE orders SET oFinishedAt = '" + helperMethods.createdAt() + "', oStatus = 'Ready for collection' WHERE oID = ?";
 
@@ -285,7 +281,7 @@ router.put('/Ready/:oID/:sID', (req, res, next) => {
 });
 
 //Cancel order
-router.put('/Cancel/:oID', (req, res, next) => {
+helperMethods.router().put('/Cancel/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
@@ -298,7 +294,7 @@ router.put('/Cancel/:oID', (req, res, next) => {
 });
 
 //Collected order
-router.put('/Collected/:oID', (req, res, next) => {
+helperMethods.router().put('/Collected/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Collected' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
@@ -311,7 +307,7 @@ router.put('/Collected/:oID', (req, res, next) => {
 });
 
 //Rate order
-router.put('/Rate/:oID/:sID', (req, res, next) => {
+helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
 
     const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ?, oColectedAt = '" + helperMethods.createdAt() + "' WHERE oID = ?";
     helperMethods.conn().query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
