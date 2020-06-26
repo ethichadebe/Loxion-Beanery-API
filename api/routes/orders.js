@@ -33,7 +33,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
                             "sLongitude": "" + result[0].sLongitude,
                             "isActive": "" + result[0].isActive,
                             "sStatus": "" + result[0].sStatus,
-                            "sAveTime": result[0].sAveTime,
+                            "sAveTime": ""+result[0].sAveTime
                         }
                     };
 
