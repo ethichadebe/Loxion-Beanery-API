@@ -18,7 +18,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
                     //Prepare notification
                     //TODO: set topic to anyone subscribed to the shop ID
                     const message = {
-                        "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
+                        "topic": "57",
                         "android": {
                             "notification": {
                                 "title": "" + result[0].oNumber,
@@ -179,7 +179,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                 //Prepare notification
                 //TODO: set topic to anyone subscribed to the shop ID
                 const message = {
-                    "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
+                    "topic": "57",
                     "android": {
                         "notification": {
                             "title": "" + result[0].oNumber,
@@ -231,7 +231,7 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
                             //Prepare notification
                             //TODO: set topic to customer
                             const message = {
-                                "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
+                                "topic": "57",
                                 "android": {
                                     "notification": {
                                         "title": "" + result[0].oNumber,
