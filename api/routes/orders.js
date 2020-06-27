@@ -6,8 +6,9 @@ helperMethods.router().post('/Order', (req, res, next) => {
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         console.log(err);
         if (!err) {
-            console.log(result);
-            const insertedID = req.params.oID;
+
+            console.log("Inserted record: ",result);
+            const insertedID = result.insertId;
             const selQuery = "SELECT shops.*,(SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders, orders.* FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = ?";
             helperMethods.conn().query(selQuery, insertedID, (err, result, fields) => {
                 console.log(err);
@@ -41,7 +42,6 @@ helperMethods.router().post('/Order', (req, res, next) => {
                     helperMethods.sendNotification(message, res.json(result[0]));
                 }
             });
-
         }
     });
 });
@@ -150,7 +150,7 @@ helperMethods.router().get('/Past/:uID', (req, res, next) => {
 helperMethods.router().get('/Upcoming/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.createdAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+        console.log(rows)
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -170,44 +170,59 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        if (!err) {
-            console.log(result);
-            const insertedID = req.params.oID;
-            const selQuery = "SELECT shops.*,(SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders, orders.* FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = ?";
-            helperMethods.conn().query(selQuery, insertedID, (err, result, fields) => {
-                console.log(err);
-                if (!err) {
-                    console.log("new order");
-                    console.log(result[0]);
-                    //Prepare notification
-                    //TODO: set topic to anyone subscribed to the shop ID
-                    const message = {
-                        "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
-                        "android": {
-                            "notification": {
-                                "title": "" + result[0].oNumber,
-                                "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
-                                "click_action": "OrdersActivity"
-                            }
-                        },
-
-                        "data": {
-                            "sID": "" + result[0].sID,
-                            "oID": "" + result[0].oID,
-                            "sLatitude": "" + result[0].sLatitude,
-                            "sLongitude": "" + result[0].sLongitude,
-                            "isActive": "" + result[0].isActive,
-                            "sStatus": "" + result[0].sStatus,
-                            "sAveTime": ""+result[0].sAveTime
+        const selQuery = "SELECT * FROM orders WHERE oID = " + insertedID;
+        helperMethods.conn().query(selQuery, (err, result, fields) => {
+            console.log(err);
+            if (!err) {
+                console.log("new order");
+                console.log(result[0]);
+                //Prepare notification
+                //TODO: set topic to anyone subscribed to the shop ID
+                const message = {
+                    "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
+                    "android": {
+                        "notification": {
+                            "title": "Order: #" + result[0].oNumber,
+                            "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
+                            "click_action": "OPEN_ACTIVITY_1"
                         }
-                    };
+                    },
 
-                    //Send notification
-                    helperMethods.sendNotification(message, res.json(result[0]));
-                }
-            });
+                    "data": {
+                        "sID": "" + result[0].sID,
+                        "sName": result[0].sName,
+                        "sShortDescrption": result[0].sShortDescrption,
+                        "sFullDescription": result[0].sFullDescription,
+                        "sSmallPicture": result[0].sSmallPicture,
+                        "sBigPicture": result[0].sBigPicture,
+                        "sLatitude": "" + result[0].sLatitude,
+                        "sLongitude": "" + result[0].sLongitude,
+                        "sAddress": result[0].sAddress,
+                        "sAveTime": "" + result[0].oID,
+                        "sRating": "" + result[0].sRating,
+                        "sStatus": "" + result[0].sStatus,
+                        "sLikes": "" + result[0].sLikes,
+                        "sOperatingHrs": result[0].sOperatingHrs,
+                        "isActive": "" + result[0].isActive,
+                        "sCreatedAt": "" + result[0].sCreatedAt,
+                        "oID": "" + result[0].oID,
+                        "oIngredients": result[0].oIngredients,
+                        "oExtras": result[0].oExtras,
+                        "oPrice": "" + result[0].oPrice,
+                        "oStatus": result[0].oStatus,
+                        "oNumber": "" + result[0].oNumber,
+                        "sID": "" + result[0].sID,
+                        "uID": "" + result[0].uID,
+                        "oCreatedAt": "" + result[0].oCreatedAt,
+                        "oRecievedAt": "" + result[0].oRecievedAt,
+                        "oFinishedAt": "" + result[0].oFinishedAt
+                    }
+                };
 
-        }
+                //Send notification
+                helperMethods.sendNotification(message, res.json({ data: "updated" }));
+            }
+        });
     });
 });
 
