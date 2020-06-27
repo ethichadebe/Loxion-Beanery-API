@@ -221,7 +221,7 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
             helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
                 console.log(err);
                 if (!err) {
-                    const selQuery = "SELECT * FROM orders WHERE oID = ?";
+                    const selQuery = "SELECT shops.*,(SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders, orders.* FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = ?";
 
                     helperMethods.conn().query(selQuery, [req.params.oID], (err, result, fields) => {
                         console.log(err);
@@ -231,7 +231,7 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
                             //Prepare notification
                             //TODO: set topic to customer
                             const message = {
-                                "topic": "57",
+                                "topic":  "" + result[0].uID,
                                 "android": {
                                     "notification": {
                                         "title": "" + result[0].oNumber,
