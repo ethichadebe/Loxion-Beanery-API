@@ -218,7 +218,7 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
             //Update shop average preparation time
             const putQuery = "UPDATE shops SET sAveTime = (SELECT AVG(TIMEDIFF(TIME(orders.oFinishedAt) , TIME(orders.createdAt)))/60 AS sAveTime FROM orders WHERE orders.sID = ?) sID = ?";
 
-            helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
+            helperMethods.conn().query(putQuery, [req.params.sID,req.params.sID], (err, result, fields) => {
                 console.log(err);
                 if (!err) {
                     const selQuery = "SELECT * FROM orders WHERE oID = ?";
