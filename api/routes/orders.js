@@ -170,7 +170,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        const selQuery = "SELECT * FROM orders WHERE oID = " + insertedID;
+        const selQuery = "SELECT * FROM orders WHERE oID = " + req.params.oID;
         helperMethods.conn().query(selQuery, (err, result, fields) => {
             console.log(err);
             if (!err) {
@@ -182,40 +182,20 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                     "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
                     "android": {
                         "notification": {
-                            "title": "Order: #" + result[0].oNumber,
+                            "title": "" + result[0].oNumber,
                             "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
-                            "click_action": "OPEN_ACTIVITY_1"
+                            "click_action": "OrdersActivity"
                         }
                     },
 
                     "data": {
                         "sID": "" + result[0].sID,
-                        "sName": result[0].sName,
-                        "sShortDescrption": result[0].sShortDescrption,
-                        "sFullDescription": result[0].sFullDescription,
-                        "sSmallPicture": result[0].sSmallPicture,
-                        "sBigPicture": result[0].sBigPicture,
+                        "oID": "" + result[0].oID,
                         "sLatitude": "" + result[0].sLatitude,
                         "sLongitude": "" + result[0].sLongitude,
-                        "sAddress": result[0].sAddress,
-                        "sAveTime": "" + result[0].oID,
-                        "sRating": "" + result[0].sRating,
-                        "sStatus": "" + result[0].sStatus,
-                        "sLikes": "" + result[0].sLikes,
-                        "sOperatingHrs": result[0].sOperatingHrs,
                         "isActive": "" + result[0].isActive,
-                        "sCreatedAt": "" + result[0].sCreatedAt,
-                        "oID": "" + result[0].oID,
-                        "oIngredients": result[0].oIngredients,
-                        "oExtras": result[0].oExtras,
-                        "oPrice": "" + result[0].oPrice,
-                        "oStatus": result[0].oStatus,
-                        "oNumber": "" + result[0].oNumber,
-                        "sID": "" + result[0].sID,
-                        "uID": "" + result[0].uID,
-                        "oCreatedAt": "" + result[0].oCreatedAt,
-                        "oRecievedAt": "" + result[0].oRecievedAt,
-                        "oFinishedAt": "" + result[0].oFinishedAt
+                        "sStatus": "" + result[0].sStatus,
+                        "sAveTime": ""+result[0].sAveTime
                     }
                 };
 
