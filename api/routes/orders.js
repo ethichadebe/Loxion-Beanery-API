@@ -2,7 +2,7 @@ const helperMethods = require('../../util/util');
 
 //Place order
 helperMethods.router().post('/Order', (req, res, next) => {
-    const insQuery = "INSERT INTO orders(`oIngredients`, `oExtras`, `oPrice`, `oNumber`, `sID`, `uID`, `createdAt`) SELECT ?, ?, ?, COUNT(*)+1, ?, ?, '" + helperMethods.createdAt() + "' FROM orders WHERE DAY(orders.createdAt) = DAY(CURRENT_DATE) AND orders.sID = ?";
+    const insQuery = "INSERT INTO orders(`oIngredients`, `oExtras`, `oPrice`, `oNumber`, `sID`, `uID`, `oCreatedAt`) SELECT ?, ?, ?, COUNT(*)+1, ?, ?, '" + helperMethods.createdAt() + "' FROM orders WHERE DAY(orders.oCreatedAt) = DAY(CURRENT_DATE) AND orders.sID = ?";
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         console.log(err);
         if (!err) {
@@ -130,7 +130,7 @@ helperMethods.router().get('/shopUpcoming/:sID', (req, res, next) => {
 
 //Returns all Past orders for a specific user
 helperMethods.router().get('/Past/:uID', (req, res, next) => {
-    helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.createdAt DESC", [req.params.uID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.oCreatedAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows);
         if (rows.length > 0) {
@@ -148,7 +148,7 @@ helperMethods.router().get('/Past/:uID', (req, res, next) => {
 
 //Returns all Upcoming orders for a specific user
 helperMethods.router().get('/Upcoming/:uID', (req, res, next) => {
-    helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.createdAt", [req.params.uID], (err, rows, fields) => {
+    helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.oCreatedAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
         console.log(rows)
         if (rows.length > 0) {
