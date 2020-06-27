@@ -7,7 +7,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
         console.log(err);
         if (!err) {
 
-            console.log("Inserted record: ",result);
+            console.log("Inserted record: ", result);
             const insertedID = result.insertId;
             const selQuery = "SELECT shops.*,(SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders, orders.* FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = ?";
             helperMethods.conn().query(selQuery, insertedID, (err, result, fields) => {
@@ -34,7 +34,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
                             "sLongitude": "" + result[0].sLongitude,
                             "isActive": "" + result[0].isActive,
                             "sStatus": "" + result[0].sStatus,
-                            "sAveTime": ""+result[0].sAveTime
+                            "sAveTime": "" + result[0].sAveTime
                         }
                     };
 
@@ -170,8 +170,8 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         console.log(err);
-        const selQuery = "SELECT * FROM orders WHERE oID = " + req.params.oID;
-        helperMethods.conn().query(selQuery, (err, result, fields) => {
+        const selQuery = "SELECT shops.*,(SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders, orders.* FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = ?";
+        helperMethods.conn().query(selQuery, req.params.oID, (err, result, fields) => {
             console.log(err);
             if (!err) {
                 console.log("new order");
@@ -195,7 +195,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                         "sLongitude": "" + result[0].sLongitude,
                         "isActive": "" + result[0].isActive,
                         "sStatus": "" + result[0].sStatus,
-                        "sAveTime": ""+result[0].sAveTime
+                        "sAveTime": "" + result[0].sAveTime
                     }
                 };
 
