@@ -6,7 +6,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
     helperMethods.conn().query(insQuery, [req.body.oIngredients, req.body.oExtras, req.body.oPrice, req.body.sID, req.body.uID, req.body.sID], (err, result, fields) => {
         console.log(err);
         if (!err) {
-
+            res.json({data:result.insertedID})
         }
     });
 });
