@@ -252,7 +252,7 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
                             };
 
                             //Send notification
-                            helperMethods.sendNotification(message, res.json({ data: insertedID }));
+                            helperMethods.sendNotification(message, res.json({ data: "Ready for collection" }));
                         }
                     });
                 }
