@@ -234,9 +234,9 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
                                 "token": "d7aQZEHUT1i49mbvsXXt8l:APA91bH7Js1Ul9bIoOT-TpMZ-V6QyDxLP04sD3PrUfMJS3GTFyrrYiCK6O7he_BpOpaN1tzEWsYIIviQ3jWBrRMr-V5bV00ZyrSdeUDBNjx_0_51uAUTAL8pgfyBeM_p2DbWNe9G_rTm",
                                 "android": {
                                     "notification": {
-                                        "title": "Order: #" + result[0].oNumber,
+                                        "title": "" + result[0].oNumber,
                                         "body": "Your order is ready for collection",
-                                        "click_action": "OPEN_ACTIVITY_1"
+                                        "click_action": "UpcomingOrderFragment"
                                     }
                                 },
 
