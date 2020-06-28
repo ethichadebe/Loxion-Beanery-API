@@ -91,7 +91,7 @@ helperMethods.router().get('/Extras/:sID', (req, res, next) => {
 });
 
 //Register shop
-helperMethods.router().post('/Register', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
+helperMethods.router().post('/RegisterShop', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
 	const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sReceiver`,`sStatus`,`sLikes`,`sOperatingHrs`,`sAddress`,`isActive`,`sCreatedAt`) VALUES (?, ?,?, '" +
 		req.files.sSmallPicture[0].filename + "', '" + req.files.sBigPicture[0].filename + "', ?, ?, 0.0,?, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
 
