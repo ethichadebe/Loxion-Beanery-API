@@ -290,7 +290,7 @@ helperMethods.router().put('/Collected/:oID', (req, res, next) => {
 //Rate order
 helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
 
-    const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ?, oColectedAt = '" + helperMethods.createdAt() + "' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ? WHERE oID = ?";
     helperMethods.conn().query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
         console.log(err);
         console.log(result);
