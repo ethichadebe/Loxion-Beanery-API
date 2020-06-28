@@ -18,7 +18,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
                     //Prepare notification
                     //TODO: set topic to anyone subscribed to the shop ID
                     const message = {
-                        "topic": "57",
+                        "topic": "" + result[0].sReceiver,
                         "android": {
                             "notification": {
                                 "title": "" + result[0].oNumber,
@@ -231,7 +231,7 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
                             //Prepare notification
                             //TODO: set topic to customer
                             const message = {
-                                "topic":  "" + result[0].uID,
+                                "topic": "" + result[0].uID,
                                 "android": {
                                     "notification": {
                                         "title": "" + result[0].oNumber,
