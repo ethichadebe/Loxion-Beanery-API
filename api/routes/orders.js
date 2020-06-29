@@ -179,7 +179,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                 //Prepare notification
                 //TODO: set topic to anyone subscribed to the shop ID
                 const message = {
-                    "topic": "57",
+                    "topic": "" + result[0].sReceiver,
                     "android": {
                         "notification": {
                             "title": "" + result[0].oNumber,

@@ -47,10 +47,11 @@ helperMethods.router().post('/Login', (req, res) => {
 //New user registration 
 helperMethods.router().post('/Register', (req, res, next) => {
     console.log(req.file);
-    const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uDOB`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`uType`,`isActive`, `uCreatedAt`) VALUES (?, ?,?, ?, ?, ?,?,?,1, '" + helperMethods.createdAt() + "')";
+    const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uAddress`,`uLongitude`,`uLatitude`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`uType`,`isActive`, `uCreatedAt`) VALUES (?, ?,?, ?,?,?, ?, ?,?,?,1, '" + helperMethods.createdAt() + "')";
 
-    helperMethods.conn().query(insQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uEmail,
-    req.body.uNumber, req.body.uPassword, req.body.uType], (err, result, fields) => {
+    helperMethods.conn().query(insQuery, [req.body.uName, req.body.uSurname, req.body.uAddress, 
+        req.body.uLongitude, req.body.uLatitude, req.body.uSex, req.body.uEmail,req.body.uNumber, 
+        req.body.uPassword, req.body.uType], (err, result, fields) => {
         console.log(err);
         console.log(result.insertId);
         res.json({
@@ -174,11 +175,12 @@ helperMethods.router().put('/EditEmail', (req, res, next) => {
 //Update user information
 helperMethods.router().put('/EditProfile', helperMethods.upload().single('ProfilePicture'), (req, res, next) => {
     console.log(req.file);
-    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uDOB = ?, uSex = ?, uPicture = '" + req.file.filename + "' WHERE uID = ?";
+    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uAddress = ?, uLongitude = ?, uLatitude = ?, uSex = ?, uPicture = '" + req.file.filename + "' WHERE uID = ?";
 
 
     //Check if number and email exists then register 
-    helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uDOB, req.body.uSex, req.body.uID], (err, result, fields) => {
+    helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uAddress, 
+        req.body.uLongitude, req.body.uLatitude, req.body.uSex, req.body.uID], (err, result, fields) => {
         console.log(err);
         const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
         var uID = req.body.uID;
