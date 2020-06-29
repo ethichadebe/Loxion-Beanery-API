@@ -293,15 +293,47 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oRating = ?, oFeedback = ? WHERE oID = ?";
     helperMethods.conn().query(putQuery, [req.body.oRating, req.body.oFeedback, req.params.oID], (err, result, fields) => {
         console.log(err);
-        console.log(result);
-        const putShopQuery = "UPDATE shops SET shops.sRating = (SELECT AVG(orders.oRating) FROM orders WHERE orders.sID = ? AND orders.oRating > 0) WHERE shops.sID = ?";
-        helperMethods.conn().query(putShopQuery, [req.params.sID, req.params.sID], (err, result, fields) => {
+        const selQuery = "SELECT shops.*,(SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders, orders.* FROM shops INNER JOIN orders ON shops.sID = orders.sID AND orders.oID = ?";
+        helperMethods.conn().query(selQuery, req.params.oID, (err, result, fields) => {
             console.log(err);
-            console.log(result);
-            res.json({
-                data: "saved"
-            })
+            if (!err) {
+                console.log("new order");
+                console.log(result[0]);
+                //Prepare notification
+                //TODO: set topic to anyone subscribed to the shop ID
+                const message = {
+                    "topic": "" + result[0].sReceiver,
+                    "android": {
+                        "notification": {
+                            "title": "" + result[0].oNumber,
+                            "body": "Rating: " + result[0].oRating + " \n Additional comments: " + result[0].oFeedback,
+                            "click_action": "OrdersActivity"
+                        }
+                    },
+
+                    "data": {
+                        "sID": "" + result[0].sID,
+                        "oID": "" + result[0].oID,
+                        "sLatitude": "" + result[0].sLatitude,
+                        "sLongitude": "" + result[0].sLongitude,
+                        "isActive": "" + result[0].isActive,
+                        "sStatus": "" + result[0].sStatus,
+                        "sAveTime": "" + result[0].sAveTime
+                    }
+                };
+
+                const putShopQuery = "UPDATE shops SET shops.sRating = (SELECT AVG(orders.oRating) FROM orders WHERE orders.sID = ? AND orders.oRating > 0) WHERE shops.sID = ?";
+                //Send notification
+                helperMethods.sendNotification(message, helperMethods.conn().query(putShopQuery, [req.params.sID, req.params.sID], (err, result, fields) => {
+                    console.log(err);
+                    console.log(result);
+                    res.json({
+                        data: "saved"
+                    })
+                }));
+            }
         });
+        
     });
 });
 
