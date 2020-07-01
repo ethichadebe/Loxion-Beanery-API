@@ -17,7 +17,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
                     console.log(result[0]);
                     //Prepare notification
                     //TODO: set topic to anyone subscribed to the shop ID
-                    const message = {
+                   /* const message = {
                         "topic": "" + result[0].sReceiver,
                         "android": {
                             "notification": {
@@ -43,7 +43,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
                             "sStatus": "" + result[0].sStatus,
                             "oID": "" + result[0].oID
                         }
-                    };
+                    };*/
 
                     //Send notification
                     helperMethods.sendNotification(message, res.json(result[0]));
@@ -348,6 +348,7 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
             }
         });
         
+    
     });
 });
 
