@@ -28,7 +28,6 @@ helperMethods.router().post('/Order', (req, res, next) => {
                         },
 
                         "data": {
-                            "oID": "" + result[0].oID,
                             "sID": "" + result[0].sID,
                             "sName": "" + result[0].sName,
                             "sSmallPicture": "" + result[0].sSmallPicture,
@@ -41,7 +40,8 @@ helperMethods.router().post('/Order', (req, res, next) => {
                             "sAveTime": "" + result[0].sAveTime,
                             "sOperatingHrs": "" + result[0].sOperatingHrs,
                             "isActive": "" + result[0].isActive,
-                            "sStatus": "" + result[0].sStatus
+                            "sStatus": "" + result[0].sStatus,
+                            "oID": "" + result[0].oID
                         }
                     };
 
@@ -196,7 +196,6 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                     },
 
                     "data": {
-                        "oID": "" + result[0].oID,
                         "sID": "" + result[0].sID,
                         "sName": "" + result[0].sName,
                         "sSmallPicture": "" + result[0].sSmallPicture,
@@ -209,6 +208,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                         "sAveTime": "" + result[0].sAveTime,
                         "sOperatingHrs": "" + result[0].sOperatingHrs,
                         "isActive": "" + result[0].isActive,
+                        "oID": "" + result[0].oID,
                         "sStatus": "" + result[0].sStatus
                     }
                 };
