@@ -192,7 +192,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                         "notification": {
                             "title": "" + result[0].oNumber,
                             "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
-                            "click_action": "OrdersActivity"
+                            "click_action": "UpcomingOrderFragment"
                         }
                     },
 
@@ -322,7 +322,7 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
                         "notification": {
                             "title": "" + result[0].oNumber,
                             "body": "Rating: " + result[0].oRating + " \n Additional comments: " + result[0].oFeedback,
-                            "click_action": "OrdersActivity"
+                            "click_action": "PastOrderFragment"
                         }
                     },
 
