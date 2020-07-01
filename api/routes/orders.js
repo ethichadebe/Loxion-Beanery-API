@@ -28,7 +28,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
                         },
 
                         "data": {
-                            "oID": "" + req.params.oID,
+                            "oID": "" + result.insertId,
                             "sID": "" + result[0].sID,
                             "sName": "" + result[0].sName,
                             "sSmallPicture": "" + result[0].sSmallPicture,
