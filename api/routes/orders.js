@@ -28,7 +28,7 @@ helperMethods.router().post('/Order', (req, res, next) => {
                         },
 
                         "data": {
-                            "oID": "" + insertedID,
+                            "oID": "" + result[0].oID,
                             "sID": "" + result[0].sID,
                             "sName": "" + result[0].sName,
                             "sSmallPicture": "" + result[0].sSmallPicture,
@@ -196,7 +196,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                     },
 
                     "data": {
-                        "oID": "" + req.params.oID,
+                        "oID": "" + result[0].oID,
                         "sID": "" + result[0].sID,
                         "sName": "" + result[0].sName,
                         "sSmallPicture": "" + result[0].sSmallPicture,
