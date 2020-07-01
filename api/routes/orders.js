@@ -43,10 +43,11 @@ helperMethods.router().post('/Order', (req, res, next) => {
                             "sStatus": "" + result[0].sStatus,
                             "oID": "" + result[0].oID
                         }
-                    };*/
+                    };
 
                     //Send notification
-                    helperMethods.sendNotification(message, res.json(result[0]));
+                    helperMethods.sendNotification(message, );*/
+                    res.json(result[0]);
                 }
             });
         }
