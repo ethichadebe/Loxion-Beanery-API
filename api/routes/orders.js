@@ -28,13 +28,20 @@ helperMethods.router().post('/Order', (req, res, next) => {
                         },
 
                         "data": {
-                            "sID": "" + result[0].sID,
                             "oID": "" + result[0].oID,
+                            "sID": "" + result[0].sID,
+                            "sName": "" + result[0].sName,
+                            "sSmallPicture": "" + result[0].sSmallPicture,
+                            "sBigPicture": "" + result[0].sBigPicture,
+                            "sShortDescrption": "" + result[0].sShortDescrption,
+                            "sFullDescrption": "" + result[0].sFullDescrption,
                             "sLatitude": "" + result[0].sLatitude,
                             "sLongitude": "" + result[0].sLongitude,
+                            "oID": "" + result[0].oAddress,
+                            "sAveTime": "" + result[0].sAveTime,
+                            "sOperatingHrs": "" + result[0].sOperatingHrs,
                             "isActive": "" + result[0].isActive,
-                            "sStatus": "" + result[0].sStatus,
-                            "sAveTime": "" + result[0].sAveTime
+                            "sStatus": "" + result[0].sStatus
                         }
                     };
 
@@ -189,17 +196,24 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                     },
 
                     "data": {
-                        "sID": "" + result[0].sID,
                         "oID": "" + result[0].oID,
+                        "sID": "" + result[0].sID,
+                        "sName": "" + result[0].sName,
+                        "sSmallPicture": "" + result[0].sSmallPicture,
+                        "sBigPicture": "" + result[0].sBigPicture,
+                        "sShortDescrption": "" + result[0].sShortDescrption,
+                        "sFullDescrption": "" + result[0].sFullDescrption,
                         "sLatitude": "" + result[0].sLatitude,
                         "sLongitude": "" + result[0].sLongitude,
+                        "oID": "" + result[0].oAddress,
+                        "sAveTime": "" + result[0].sAveTime,
+                        "sOperatingHrs": "" + result[0].sOperatingHrs,
                         "isActive": "" + result[0].isActive,
-                        "sStatus": "" + result[0].sStatus,
-                        "sAveTime": "" + result[0].sAveTime
+                        "sStatus": "" + result[0].sStatus
                     }
                 };
 
-                //Send notification
+            //Send notification
                 helperMethods.sendNotification(message, res.json({ data: "updated" }));
             }
         });
