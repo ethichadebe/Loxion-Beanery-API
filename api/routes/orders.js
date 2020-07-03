@@ -333,7 +333,12 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
                         "notification": {
                             "title": "" + result[0].oNumber,
                             "body": "Rating: " + result[0].oRating + " \n Additional comments: " + result[0].oFeedback,
-                            "click_action": "PastOrderFragment"
+                            "click_action": "OrdersActivity",
+                            "channel_id": "incoming_order",
+                            "tag": "" + result[0].oNumber,
+                            "notification_priority": "PRIORITY_HIGH",
+                            "visibility": "PUBLIC",
+                            "color": "#C45A26",
                         }
                     },
 
@@ -350,6 +355,7 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
                         "sAveTime": "" + result[0].sAveTime,
                         "sOperatingHrs": "" + result[0].sOperatingHrs,
                         "isActive": "" + result[0].isActive,
+                        "isPast": "true",
                         "oID": "" + result[0].oID,
                         "sStatus": "" + result[0].sStatus
                     }
