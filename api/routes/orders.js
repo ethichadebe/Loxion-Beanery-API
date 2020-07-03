@@ -193,7 +193,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                             "title": "" + result[0].oNumber,
                             "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
                             "click_action": "OrdersActivity",
-                            "tag": result[0].oNumber,
+                            "tag": ""+result[0].oNumber,
                             "notification_priority": "PRIORITY_MAX",
                             "visibility": "PUBLIC",
                             "color": "#C45A26",
