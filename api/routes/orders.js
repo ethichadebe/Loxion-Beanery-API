@@ -210,7 +210,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                         "sFullDescrption": "" + result[0].sFullDescrption,
                         "sLatitude": "" + result[0].sLatitude,
                         "sLongitude": "" + result[0].sLongitude,
-                        "oID": "" + result[0].oAddress,
+                        "oID": "" + result[0].sAddress,
                         "sAveTime": "" + result[0].sAveTime,
                         "sOperatingHrs": "" + result[0].sOperatingHrs,
                         "isActive": "" + result[0].isActive,
