@@ -207,7 +207,7 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                         "sSmallPicture": "" + result[0].sSmallPicture,
                         "sBigPicture": "" + result[0].sBigPicture,
                         "sShortDescrption": "" + result[0].sShortDescrption,
-                        "sFullDescrption": "" + result[0].sFullDescrption,
+                        "sFullDescription": "" + result[0].sFullDescription,
                         "sLatitude": "" + result[0].sLatitude,
                         "sLongitude": "" + result[0].sLongitude,
                         "sAddress": "" + result[0].sAddress,
