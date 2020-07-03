@@ -355,7 +355,7 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
                         "sAveTime": "" + result[0].sAveTime,
                         "sOperatingHrs": "" + result[0].sOperatingHrs,
                         "isActive": "" + result[0].isActive,
-                        "isPast": "true",
+                        "isPast": "true ",
                         "oID": "" + result[0].oID,
                         "sStatus": "" + result[0].sStatus
                     }
