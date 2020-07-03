@@ -17,36 +17,36 @@ helperMethods.router().post('/Order', (req, res, next) => {
                     console.log(result[0]);
                     //Prepare notification
                     //TODO: set topic to anyone subscribed to the shop ID
-                   /* const message = {
-                        "topic": "" + result[0].sReceiver,
-                        "android": {
-                            "notification": {
-                                "title": "" + result[0].oNumber,
-                                "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
-                                "click_action": "OrdersActivity"
-                            }
-                        },
-
-                        "data": {
-                            "sID": "" + result[0].sID,
-                            "sName": "" + result[0].sName,
-                            "sSmallPicture": "" + result[0].sSmallPicture,
-                            "sBigPicture": "" + result[0].sBigPicture,
-                            "sShortDescrption": "" + result[0].sShortDescrption,
-                            "sFullDescrption": "" + result[0].sFullDescrption,
-                            "sLatitude": "" + result[0].sLatitude,
-                            "sLongitude": "" + result[0].sLongitude,
-                            "oID": "" + result[0].oAddress,
-                            "sAveTime": "" + result[0].sAveTime,
-                            "sOperatingHrs": "" + result[0].sOperatingHrs,
-                            "isActive": "" + result[0].isActive,
-                            "sStatus": "" + result[0].sStatus,
-                            "oID": "" + result[0].oID
-                        }
-                    };
-
-                    //Send notification
-                    helperMethods.sendNotification(message, );*/
+                    /* const message = {
+                         "topic": "" + result[0].sReceiver,
+                         "android": {
+                             "notification": {
+                                 "title": "" + result[0].oNumber,
+                                 "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
+                                 "click_action": "OrdersActivity"
+                             }
+                         },
+ 
+                         "data": {
+                             "sID": "" + result[0].sID,
+                             "sName": "" + result[0].sName,
+                             "sSmallPicture": "" + result[0].sSmallPicture,
+                             "sBigPicture": "" + result[0].sBigPicture,
+                             "sShortDescrption": "" + result[0].sShortDescrption,
+                             "sFullDescrption": "" + result[0].sFullDescrption,
+                             "sLatitude": "" + result[0].sLatitude,
+                             "sLongitude": "" + result[0].sLongitude,
+                             "oID": "" + result[0].oAddress,
+                             "sAveTime": "" + result[0].sAveTime,
+                             "sOperatingHrs": "" + result[0].sOperatingHrs,
+                             "isActive": "" + result[0].isActive,
+                             "sStatus": "" + result[0].sStatus,
+                             "oID": "" + result[0].oID
+                         }
+                     };
+ 
+                     //Send notification
+                     helperMethods.sendNotification(message, );*/
                     res.json(result[0]);
                 }
             });
@@ -190,11 +190,11 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                     "topic": "" + result[0].sReceiver,
                     "android": {
                         "notification": {
-                            "title": "" + result[0].oNumber,
+                            "title": "Order #" + result[0].oNumber,
                             "body": "R" + result[0].oPrice + " " + result[0].oIngredients,
                             "click_action": "OrdersActivity",
                             "channel_id": "incoming_order",
-                            "tag": ""+result[0].oNumber,
+                            "tag": "" + result[0].oNumber,
                             "notification_priority": "PRIORITY_HIGH",
                             "visibility": "PUBLIC",
                             "color": "#C45A26",
@@ -215,11 +215,12 @@ helperMethods.router().put('/Arrived/:oID', (req, res, next) => {
                         "sOperatingHrs": "" + result[0].sOperatingHrs,
                         "isActive": "" + result[0].isActive,
                         "oID": "" + result[0].oID,
+                        "isPast": "false",
                         "sStatus": "" + result[0].sStatus
                     }
                 };
 
-            //Send notification
+                //Send notification
                 helperMethods.sendNotification(message, res.json({ data: "updated" }));
             }
         });
@@ -254,9 +255,14 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
                                 "topic": "" + result[0].uID,
                                 "android": {
                                     "notification": {
-                                        "title": "" + result[0].oNumber,
+                                        "title": "Order #" + result[0].oNumber,
                                         "body": "Your order is ready for collection",
-                                        "click_action": "UpcomingOrderFragment"
+                                        "click_action": "MainActivity",
+                                        "channel_id": "ready_for_collection",
+                                        "tag": "" + result[0].oNumber,
+                                        "notification_priority": "PRIORITY_HIGH",
+                                        "visibility": "PUBLIC",
+                                        "color": "#C45A26",
                                     }
                                 },
 
@@ -267,7 +273,7 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
                                     "oPrice": "" + result[0].oPrice,
                                     "oNumber": "" + result[0].oNumber,
                                     "sID": "" + result[0].sID,
-                                    "uID": "" + result[0].uID
+                                    "uID": "" + result[0].uID,
                                 }
                             };
 
@@ -360,8 +366,8 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
                 }));
             }
         });
-        
-    
+
+
     });
 });
 
