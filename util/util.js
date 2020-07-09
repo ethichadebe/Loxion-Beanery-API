@@ -29,7 +29,7 @@ const upload = multer({ storage: storage });
 //Database connection remote 
 const conn = mysql.createConnection({
     host: 'sql205.epizy.com',
-    database: 'epiz_24959421_loxionbeanery',
+    database: 'epiz_24959421_loxionbeaney',
     user: 'epiz_24959421',
     password: 'hzfnj6gv',
     port: '3306'
