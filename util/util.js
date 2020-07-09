@@ -27,22 +27,22 @@ const upload = multer({ storage: storage });
 
 
 //Database connection remote 
-/*const conn = mysql.createConnection({
+const conn = mysql.createConnection({
     host: 'sql7.freemysqlhosting.net',
     database: 'sql7352577',
     user: 'sql7352577',
     password: 'KVBLahsS5e',
     port: '3306'
-});*/
+});
 
 
-const conn = mysql.createConnection({
+/*const conn = mysql.createConnection({
     host: 'sql205.epizy.com',
     database: 'epiz_24959421_loxionbeanery',
     user: 'epiz_24959421',
     password: 'hzfnj6gv',
     port: '3306'
-});
+});*/
 
 //Database connection local 
 /*const conn = mysql.createConnection({
@@ -73,7 +73,7 @@ module.exports = {
     },
 
     //Database connection    
-    conn: function () {
+    conn: function (err) {
         return conn;
     },
 
