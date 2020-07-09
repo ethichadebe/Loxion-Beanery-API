@@ -74,9 +74,6 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
            console.log(err);            
            } else{
             console.log("Database connected successfully!");
-           }
-        });
-
     //Check if number and email exists then register 
     helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
 
@@ -110,6 +107,9 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
             });
         }
     });
+           }
+        });
+
 
 });
 
