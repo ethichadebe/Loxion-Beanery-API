@@ -68,11 +68,6 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
     const selectQuery2 = "SELECT * FROM users WHERE uEmail = ?";
 
     //Check if number and email exists then register 
-    if (!helperMethods.conn()) {
-            res.json({
-                data: "cannt connect"
-            });
-    }else{
     helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
         if (result.length > 0) {
             console.log(err);
@@ -104,8 +99,6 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
             });
         }
     });
-
-    }
 
 });
 

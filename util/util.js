@@ -73,8 +73,8 @@ module.exports = {
     },
 
     //Database connection    
-    conn: function () {
-        return conn;
+    conn: function (err) {
+        return conn(err);
     },
 
     //Upload
