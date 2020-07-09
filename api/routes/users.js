@@ -67,14 +67,15 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
     const selectQuery1 = "SELECT * FROM users WHERE uNumber = ?";
     const selectQuery2 = "SELECT * FROM users WHERE uEmail = ?";
 
-    //Check if number and email exists then register 
-    helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
            console.log("Database test!");
         helperMethods.conn().connect(function(err) {
            console.log("Database test!");
            if (err) throw err;
            console.log("Database connected successfully!");
         });
+
+    //Check if number and email exists then register 
+    helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
 
         if (result.length > 0) {
             console.log(err);
