@@ -72,8 +72,10 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
         helperMethods.conn().connect(function(err) {
            if (err) throw err;
            console.log("Database connected successfully!");
+           else
+           console.log("Database connected not successfully!");            
         });
-        
+
         if (result.length > 0) {
             console.log(err);
             console.log(result);
