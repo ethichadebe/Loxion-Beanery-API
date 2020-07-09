@@ -70,10 +70,9 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
     //Check if number and email exists then register 
     helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
         helperMethods.conn().connect(function(err) {
+           console.log("Database test!");
            if (err) throw err;
            console.log("Database connected successfully!");
-           else
-           console.log("Database connected not successfully!");            
         });
 
         if (result.length > 0) {
