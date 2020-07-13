@@ -250,7 +250,6 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
                             console.log("new order");
                             console.log(result[0]);
                             //Prepare notification
-                            //TODO: set topic to customer
                             const message = {
                                 "topic": "" + result[0].uID,
                                 "android": {
@@ -292,11 +291,14 @@ helperMethods.router().put('/Cancel/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
-        console.log(err);
-        console.log(result);
-        res.json({
-            data: "Canceled"
-        })
+        if(!err){
+            console.log(result);
+            res.json({
+                data: "Canceled"
+            })    
+        }else{
+            console.log(err);            
+        }
     });
 });
 
@@ -332,7 +334,7 @@ helperMethods.router().put('/Rate/:oID/:sID', (req, res, next) => {
                     "android": {
                         "notification": {
                             "title": "" + result[0].oNumber,
-                            "body": "Rating: " + result[0].oRating + " \n Additional comments: " + result[0].oFeedback,
+                            "body": "Rating: " + result[0].oRating + "\nAdditional comments: " + result[0].oFeedback,
                             "click_action": "OrdersActivity",
                             "channel_id": "incoming_order",
                             "tag": "" + result[0].oNumber,

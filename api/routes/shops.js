@@ -384,11 +384,56 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 	const putQuery = "UPDATE shops SET sStatus = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
-		console.log(err);
-		console.log(result);
-		res.json({
-			data: "saved"
-		})
+		if (!err && (req.body.sNorders>0)) {
+			const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE sID = ? AND oStatus = 'Waiting for order'";
+
+			helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
+				if (!err) {
+					console.log(result);
+					//Prepare notification
+					const message = {
+						"topic": "" + req.params.sID,
+						"android": {
+							"notification": {
+								"title": "Orders cancelled",
+								"body": "All orders from " + req.body.sName + " have been cancelled due to unexpected shop closure\nMore Information: " + req.body.sFeedback,
+								//"click_action": "MainActivity",
+								"channel_id": "ready_for_collection",
+								"tag": "" + req.params.sID,
+								"notification_priority": "PRIORITY_HIGH",
+								"visibility": "PUBLIC",
+								"color": "#C45A26",
+							}
+						},
+
+						"data": {
+							"oID": "" + result[0].oID,
+							"oIngredients": result[0].oIngredients,
+							"oExtras": result[0].oExtras,
+							"oPrice": "" + result[0].oPrice,
+							"oNumber": "" + result[0].oNumber,
+							"sID": "" + result[0].sID,
+							"uID": "" + result[0].uID,
+						}
+					};
+
+					//Send notification
+					helperMethods.sendNotification(message, res.json({ data: "saved" }));
+
+				} else {
+					console.log(err);
+				}
+				console.log(result);
+			});
+		} else if (!err) {
+			console.log(err);
+			console.log(result);
+			res.json({
+				data: "saved"
+			})
+		} else {
+			console.log(err);
+		}
 	});
 });
 
