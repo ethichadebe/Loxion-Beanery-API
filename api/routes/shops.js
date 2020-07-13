@@ -93,7 +93,7 @@ helperMethods.router().get('/Extras/:sID', (req, res, next) => {
 //Register shop
 helperMethods.router().post('/RegisterShop', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
 	const insQuery = "INSERT INTO shops(`sName`,`sShortDescrption`,`sFullDescription`, `sSmallPicture`, `sBigPicture`, `sLatitude`, `sLongitude`,`sRating`,`sReceiver`,`sStatus`,`sLikes`,`sOperatingHrs`,`sAddress`,`isActive`,`sCreatedAt`) VALUES (?, ?,?, '" +
-		req.files.sSmallPicture[0].filename + "', '" + req.files.sBigPicture[0].filename + "', ?, ?, 0.0,?, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
+		req.files.sSmallPicture[0].location + "', '" + req.files.sBigPicture[0].location + "', ?, ?, 0.0,?, 0,0,?,?,0, '" + helperMethods.createdAt() + "')";
 
 	helperMethods.conn().query(insQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
 	req.body.sLatitude, req.body.sLongitude, req.body.uID, req.body.sOperatingHrs, req.body.sAddress], (err, result, fields) => {
@@ -287,7 +287,7 @@ helperMethods.router().delete('/Register/Extra/:eID', (req, res, next) => {
 
 //Put shop
 helperMethods.router().put('/Register/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
-	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].filename + "', `sBigPicture` =  '" + req.files.sBigPicture[0].filename + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ? WHERE sID = ?";
+	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].location + "', `sBigPicture` =  '" + req.files.sBigPicture[0].location + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
 	req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.params.sID], (err, result, fields) => {
@@ -300,7 +300,7 @@ helperMethods.router().put('/Register/:sID', helperMethods.upload().fields([{ na
 });
 //Put shop
 helperMethods.router().put('/CompleteRegister/:sID', helperMethods.upload().fields([{ name: 'sSmallPicture' }, { name: 'sBigPicture' }]), (req, res, next) => {
-	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].filename + "', `sBigPicture` =  '" + req.files.sBigPicture[0].filename + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ?, `sOperatingHrs` = ? WHERE sID = ?";
+	const putQuery = "UPDATE shops SET `sName` = ?,`sShortDescrption` = ?,`sFullDescription` = ?, `sSmallPicture` = '" + req.files.sSmallPicture[0].location + "', `sBigPicture` =  '" + req.files.sBigPicture[0].location + "', `sLatitude` = ?, `sLongitude` = ?, `sAddress` = ?, `sOperatingHrs` = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sName, req.body.sShortDescrption, req.body.sFullDescription,
 	req.body.sLatitude, req.body.sLongitude, req.body.sAddress, req.body.sOperatingHrs, req.params.sID], (err, result, fields) => {
