@@ -186,7 +186,7 @@ helperMethods.router().put('/EditEmail', (req, res, next) => {
 //Update user information
 helperMethods.router().put('/EditProfile', helperMethods.upload().single('ProfilePicture'), (req, res, next) => {
     console.log(req.file);
-    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uAddress = ?, uLongitude = ?, uLatitude = ?, uSex = ?, uPicture = '" + req.file.location + "' WHERE uID = ?";
+    const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uAddress = ?, uLongitude = ?, uLatitude = ?, uSex = ?, uPicture = '" + req.file.originalname + "' WHERE uID = ?";
 
 
     //Check if number and email exists then register 
