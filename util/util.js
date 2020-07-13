@@ -1,35 +1,26 @@
+
 const mysql = require('mysql');
 const multer = require('multer');
 const express = require('express');
 const firebase = require('firebase-admin');
-const multerS3 = require('multer-s3');
-const aws = require('aws-sdk');
 const router = express.Router();
 
-var serviceAccount = require("/app/util/service_account.json");
+//const serviceAccount = require("../../util/serviceAccount.json");
 
 firebase.initializeApp({
-    credential: firebase.credential.cert(serviceAccount),
-    databaseURL: "https://loxion-beanery-78c17.firebaseio.com"
+  /*credential: firebase.credential.cert(serviceAccount),
+  databaseURL: "https://loxion-beanery-78c17.firebaseio.com"*/
 });
-
-aws.config.update({
-    secretAccessKey: 'LznJGQ9FEqYa3PRVlBYtAs4haRK2Ed8+C+k2sQMy',
-    accessKeyId: 'AKIAIM4XPZKM7437RH6Q',
-    region: 'eu-west-3'
-});
-var s3 = new aws.S3();
 
 //Image uploader
-const storage = multerS3({
-    s3: s3,
-    bucket: 'loxionbeanery',
-    acl: 'public-read',
-    metadata: function (req, file, cb) {
-        cb(null, { fieldName: file.fieldname });
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
     },
-    key: function (req, file, cb) {
-        cb(null, Date.now().toString())
+    filename: function (req, file, cb) {
+        const now = new Date().toISOString();
+        const date = now.replace(/:/g, '-');
+        cb(null, date); //+ file.originalname);
     }
 });
 
