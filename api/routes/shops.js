@@ -385,7 +385,7 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 
 	helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
 		if (!err && (req.body.sNorders>0)) {
-			const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE sID = ? AND oStatus = 'Waiting for order'";
+			const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE sID = ? AND oStatus = 'Waiting for order'";
 
 			helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
 				if (!err) {

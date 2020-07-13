@@ -288,7 +288,7 @@ helperMethods.router().put('/Ready/:oID/:sID', (req, res, next) => {
 
 //Cancel order
 helperMethods.router().put('/Cancel/:oID', (req, res, next) => {
-    const putQuery = "UPDATE orders SET oColectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
+    const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
         if(!err){
