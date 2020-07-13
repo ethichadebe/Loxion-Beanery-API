@@ -6,7 +6,7 @@ const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
 const router = express.Router();
 
-var serviceAccount = require("/app/util/serviceAccount.json");
+const serviceAccount = require("/app/util/service_account.json");
 
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount),
