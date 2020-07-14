@@ -426,7 +426,6 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 						}*/
 					};
 
-					console.log("Send notification");
 					helperMethods.sendNotification(message, res.json({ data: "saved" }));
 
 				} else {

@@ -113,6 +113,7 @@ module.exports = {
     }*/
 
     sendNotification: function (message, res) {
+        console.log("Send notification");
         var message = message;
 
         // Send a message to devices subscribed to the provided topic.
