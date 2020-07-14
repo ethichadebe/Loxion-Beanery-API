@@ -407,7 +407,7 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 							}
 						},
 
-						"data": {
+						/*"data": {
 							"oID": "" + result[0].oID,
 							"oIngredients": result[0].oIngredients,
 							"oExtras": result[0].oExtras,
@@ -415,7 +415,7 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 							"oNumber": "" + result[0].oNumber,
 							"sID": "" + result[0].sID,
 							"uID": "" + result[0].uID,
-						}
+						}*/
 					};
 
 					//Send notification
