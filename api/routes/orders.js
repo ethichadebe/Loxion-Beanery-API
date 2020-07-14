@@ -70,7 +70,7 @@ helperMethods.router().get('/', (req, res, next) => {
 helperMethods.router().get('/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM orders WHERE sID = ? AND (orders.oStatus = 'Waiting for order' OR orders.oStatus = 'Ready for collection')", req.params.sID, (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+        //console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -88,7 +88,7 @@ helperMethods.router().get('/:sID', (req, res, next) => {
 helperMethods.router().get('/AdminPastOrders/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Collected'", req.params.sID, (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+//        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -106,7 +106,7 @@ helperMethods.router().get('/AdminPastOrders/:sID', (req, res, next) => {
 helperMethods.router().get('/shopPast/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+       // console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -123,7 +123,7 @@ helperMethods.router().get('/shopPast/:sID', (req, res, next) => {
 helperMethods.router().get('/shopUpcoming/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =?)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+       // console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -140,7 +140,7 @@ helperMethods.router().get('/shopUpcoming/:sID', (req, res, next) => {
 helperMethods.router().get('/Past/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.oCreatedAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-        console.log(rows);
+     //   console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -158,7 +158,7 @@ helperMethods.router().get('/Past/:uID', (req, res, next) => {
 helperMethods.router().get('/Upcoming/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.oCreatedAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-        console.log(rows)
+       // console.log(rows)
         if (rows.length > 0) {
             res.json({
                 message: "orders",
