@@ -413,17 +413,17 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 								"visibility": "PUBLIC",
 								"color": "#C45A26",
 							}
-						}/*,
+						},
 
 						"data": {
-							"oID": "" + result[0].oID,
-							"oIngredients": result[0].oIngredients,
-							"oExtras": result[0].oExtras,
-							"oPrice": "" + result[0].oPrice,
-							"oNumber": "" + result[0].oNumber,
-							"sID": "" + result[0].sID,
-							"uID": "" + result[0].uID,
-						}*/
+							"oID": "" + "",
+							"oIngredients": "result[0].oIngredients",
+							"oExtras": "result[0].oExtras",
+							"oPrice": "" + "result[0].oPrice",
+							"oNumber": "" + "result[0].oNumber",
+							"sID": "" + "result[0].sID",
+							"uID": "" + "result[0].uID",
+						}
 					};
 
 					helperMethods.sendNotification(message, res.json({ data: "saved" }));
