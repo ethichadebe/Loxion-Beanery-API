@@ -386,6 +386,9 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 	helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
 		if (!err && (req.body.sFeedback != "")) {
 			console.log({
+				settingStatus: result
+			});
+			console.log({
 				status: req.body.sStatus,
 				sID: req.params.sID,
 				sFeedback: req.body.sFeedback
