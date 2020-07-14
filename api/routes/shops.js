@@ -384,7 +384,7 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 	const putQuery = "UPDATE shops SET sStatus = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
-		if (!err && (req.body.sFeedback != "")) {
+		if (!err && (req.body.sStatus == "0")) {
 			console.log({
 				settingStatus: result
 			});
