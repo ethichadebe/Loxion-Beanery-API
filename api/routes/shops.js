@@ -384,7 +384,7 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 	const putQuery = "UPDATE shops SET sStatus = ? WHERE sID = ?";
 
 	helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
-		if (!err && (req.body.sNorders>0)) {
+		if (!err && (req.body.sFeedback != "")) {
 			const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE sID = ? AND oStatus = 'Waiting for order'";
 
 			helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
@@ -396,7 +396,8 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 						"android": {
 							"notification": {
 								"title": "Orders cancelled",
-								"body": "All orders from " + req.body.sName + " have been cancelled due to unexpected shop closure\nMore Information: " + req.body.sFeedback,
+								"body": "All orders from " + req.body.sName + " have been cancelled due to unexpected shop closure\nMore Information: "
+									+ req.body.sFeedback,
 								//"click_action": "MainActivity",
 								"channel_id": "ready_for_collection",
 								"tag": "" + req.params.sID,
