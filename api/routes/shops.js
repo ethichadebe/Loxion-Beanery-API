@@ -385,6 +385,10 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 
 	helperMethods.conn().query(putQuery, [req.body.sStatus, req.params.sID], (err, result, fields) => {
 		if (!err && (req.body.sFeedback != "")) {
+			console.log({
+				status: req.body.sStatus,
+				sID: req.params.sID
+			});
 			const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE sID = ? AND oStatus = 'Waiting for order'";
 
 			helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
@@ -405,9 +409,9 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 								"visibility": "PUBLIC",
 								"color": "#C45A26",
 							}
-						},
+						}/*,
 
-						/*"data": {
+						"data": {
 							"oID": "" + result[0].oID,
 							"oIngredients": result[0].oIngredients,
 							"oExtras": result[0].oExtras,
