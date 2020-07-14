@@ -395,7 +395,7 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 			});
 			const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE sID = ? AND oStatus = 'Waiting for order'";
 
-			helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
+			helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
 				if (!err) {
 					console.log(result);
 					//Prepare notification
