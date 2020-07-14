@@ -387,7 +387,8 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 		if (!err && (req.body.sFeedback != "")) {
 			console.log({
 				status: req.body.sStatus,
-				sID: req.params.sID
+				sID: req.params.sID,
+				sFeedback: req.body.sFeedback
 			});
 			const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE sID = ? AND oStatus = 'Waiting for order'";
 
