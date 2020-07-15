@@ -398,6 +398,10 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 			helperMethods.conn().query(putQuery, [req.params.sID], (err, result, fields) => {
 				if (!err) {
 					console.log({ Candelled_orders: result });
+					console.log({
+						sName:req.body.sName,
+						sID:req.params.sID
+					})
 					//Prepare notification
 					const message = {
 						"topic": req.body.sName +""+ req.params.sID,
