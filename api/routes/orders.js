@@ -311,7 +311,7 @@ helperMethods.router().put('/Cancel/:oID', (req, res, next) => {
 
                 "data": {
                     "sID": "" + req.params.sID,
-                    "topic": "" + req.body.sName.replace(/[^a-zA-Z0-9]/g, '_') + req.params.sID
+                    "topic": "" + req.params.oID
                 }
             };
 
