@@ -400,7 +400,7 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 					console.log({ Candelled_orders: result });
 					//Prepare notification
 					const message = {
-						"topic": req.body.sName + req.params.sID,
+						"topic": req.body.sName +""+ req.params.sID,
 						"android": {
 							"notification": {
 								"title": "Orders cancelled",
