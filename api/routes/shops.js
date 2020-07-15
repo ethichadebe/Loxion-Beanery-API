@@ -400,13 +400,13 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 					console.log({ Candelled_orders: result });
 					//Prepare notification
 					const message = {
-						"topic": "10", //+ req.params.sID,
+						"topic": ""+ req.params.sID,
 						"android": {
 							"notification": {
 								"title": "Orders cancelled",
 								"body": "All orders from " + req.body.sName + " have been cancelled due to unexpected shop closure\nMore Information: "
 									+ req.body.sFeedback,
-								//"click_action": "MainActivity",
+								"click_action": "LoginActivity",
 								"channel_id": "ready_for_collection",
 								"tag": "" + req.params.sID,
 								"notification_priority": "PRIORITY_HIGH",
@@ -416,13 +416,7 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 						},
 
 						"data": {
-							"oID": "" + "",
-							"oIngredients": "result[0].oIngredients",
-							"oExtras": "result[0].oExtras",
-							"oPrice": "" + "result[0].oPrice",
-							"oNumber": "" + "result[0].oNumber",
-							"sID": "" + "result[0].sID",
-							"uID": "" + "result[0].uID",
+							"oID": "" + req.params.sID
 						}
 					};
 
