@@ -88,7 +88,7 @@ helperMethods.router().get('/:sID', (req, res, next) => {
 helperMethods.router().get('/AdminPastOrders/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Collected'", req.params.sID, (err, rows, fields) => {
         console.log(err);
-//        console.log(rows);
+        //        console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -106,7 +106,7 @@ helperMethods.router().get('/AdminPastOrders/:sID', (req, res, next) => {
 helperMethods.router().get('/shopPast/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =49)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
-       // console.log(rows);
+        // console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -123,7 +123,7 @@ helperMethods.router().get('/shopPast/:sID', (req, res, next) => {
 helperMethods.router().get('/shopUpcoming/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT orders.*, shops.sName FROM orders, shops WHERE (orders.sID = shops.sID) AND (orders.uID =?)", [req.params.sID], (err, rows, fields) => {
         console.log(err);
-       // console.log(rows);
+        // console.log(rows);
         if (rows.length > 0) {
             res.json({
                 orders: rows
@@ -140,7 +140,7 @@ helperMethods.router().get('/shopUpcoming/:sID', (req, res, next) => {
 helperMethods.router().get('/Past/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON orders.sID = shops.sID AND (orders.uID = ? AND (orders.oStatus = 'Collected' OR orders.oStatus = 'Cancelled')) ORDER BY orders.oCreatedAt DESC", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-     //   console.log(rows);
+        //   console.log(rows);
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -158,7 +158,7 @@ helperMethods.router().get('/Past/:uID', (req, res, next) => {
 helperMethods.router().get('/Upcoming/:uID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM shops INNER JOIN orders ON shops.sID = orders.sID AND (orders.uID = ? AND orders.oStatus != 'Collected' AND orders.oStatus != 'Cancelled') ORDER BY orders.oCreatedAt", [req.params.uID], (err, rows, fields) => {
         console.log(err);
-       // console.log(rows)
+        // console.log(rows)
         if (rows.length > 0) {
             res.json({
                 message: "orders",
@@ -291,13 +291,33 @@ helperMethods.router().put('/Cancel/:oID', (req, res, next) => {
     const putQuery = "UPDATE orders SET oCollectedAt = '" + helperMethods.createdAt() + "', oStatus = 'Cancelled' WHERE oID = ?";
 
     helperMethods.conn().query(putQuery, [req.params.oID], (err, result, fields) => {
-        if(!err){
+        if (!err) {
             console.log(result);
-            res.json({
-                data: "Canceled"
-            })    
-        }else{
-            console.log(err);            
+            //Prepare notification
+            const message = {
+                "topic": req.params.oID,
+                "android": {
+                    "notification": {
+                        "title": "Order #" + req.params.oID + " cancelled",
+                        "body": "Your order has been cancelled",
+                        "click_action": "LoginActivity",
+                        "channel_id": "order_cancelled",
+                        "tag": "" + req.params.oID,
+                        "notification_priority": "PRIORITY_HIGH",
+                        "visibility": "PUBLIC",
+                        "color": "#C45A26",
+                    }
+                },
+
+                "data": {
+                    "sID": "" + req.params.oID,
+                    "sName": "" + req.body.oName
+                }
+            };
+
+            helperMethods.sendNotification(message, res.json({ data: "cancelled" }));
+        } else {
+            console.log(err);
         }
     });
 });
