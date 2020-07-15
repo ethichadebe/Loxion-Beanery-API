@@ -299,10 +299,10 @@ helperMethods.router().put('/Cancel/:oID', (req, res, next) => {
                 "android": {
                     "notification": {
                         "title": "Order #" + req.params.oID + " cancelled",
-                        "body": "Your order has been cancelled",
+                        "body": "Your order has been cancelled. \nMore Information: " + req.body.feedback,
                         "click_action": "LoginActivity",
                         "channel_id": "order_cancelled",
-                        "tag": "" + req.params.oID,
+                        "tag": "" + req.params.sID,
                         "notification_priority": "PRIORITY_HIGH",
                         "visibility": "PUBLIC",
                         "color": "#C45A26",
@@ -310,8 +310,8 @@ helperMethods.router().put('/Cancel/:oID', (req, res, next) => {
                 },
 
                 "data": {
-                    "sID": "" + req.params.oID,
-                    "sName": "" + req.body.oName
+                    "sID": "" + req.params.sID,
+                    "topic": "" + req.body.sName.replace(/[^a-zA-Z0-9]/g, '_') + req.params.sID
                 }
             };
 
