@@ -399,12 +399,12 @@ helperMethods.router().put('/Status/:sID', (req, res, next) => {
 				if (!err) {
 					console.log({ Candelled_orders: result });
 					console.log({
-						sName:req.body.sName,
+						sName:req.body.sName.replace(/[^a-zA-Z0-9]/g,'_'),
 						sID:req.params.sID
 					})
 					//Prepare notification
 					const message = {
-						"topic": req.body.sName +""+ req.params.sID,
+						"topic": req.body.sName.replace(/[^a-zA-Z0-9]/g,'_') +""+ req.params.sID,
 						"android": {
 							"notification": {
 								"title": "Orders cancelled",
