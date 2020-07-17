@@ -49,9 +49,9 @@ helperMethods.router().post('/Register', (req, res, next) => {
     console.log(req.file);
     const insQuery = "INSERT INTO users(`uName`, `uSurname`,`uAddress`,`uLongitude`,`uLatitude`,`uSex`,`uEmail`,`uNumber`,`uPassword`,`uType`,`isActive`, `uCreatedAt`) VALUES (?, ?,?, ?,?,?, ?, ?,?,?,1, '" + helperMethods.createdAt() + "')";
 
-    helperMethods.conn().query(insQuery, [req.body.uName, req.body.uSurname, req.body.uAddress, 
-        req.body.uLongitude, req.body.uLatitude, req.body.uSex, req.body.uEmail,req.body.uNumber, 
-        req.body.uPassword, req.body.uType], (err, result, fields) => {
+    helperMethods.conn().query(insQuery, [req.body.uName, req.body.uSurname, req.body.uAddress,
+    req.body.uLongitude, req.body.uLatitude, req.body.uSex, req.body.uEmail, req.body.uNumber,
+    req.body.uPassword, req.body.uType], (err, result, fields) => {
         console.log(err);
         console.log(result.insertId);
         res.json({
@@ -67,13 +67,7 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
     const selectQuery1 = "SELECT * FROM users WHERE uNumber = ?";
     const selectQuery2 = "SELECT * FROM users WHERE uEmail = ?";
 
-           console.log("Database test!");
-        helperMethods.conn().connect(function(err) {
-           console.log("Database test!");
-           if (err){
-           console.log(err);            
-           } else{
-            console.log("Database connected successfully!");
+    console.log("Database connected successfully!");
     //Check if number and email exists then register 
     helperMethods.conn().query(selectQuery, [req.body.uNumber, req.body.uEmail], (err, result, fields) => {
 
@@ -107,9 +101,6 @@ helperMethods.router().post('/CheckStuff', (req, res) => {
             });
         }
     });
-           }
-        });
-
 
 });
 
@@ -137,7 +128,7 @@ helperMethods.router().put('/EditNumber', (req, res, next) => {
                 console.log(uID);
                 helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
                     console.log(err);
-                     console.log(result);
+                    console.log(result);
                     res.json({
                         data: "saved",
                         response: result
@@ -172,7 +163,7 @@ helperMethods.router().put('/EditEmail', (req, res, next) => {
                 console.log(uID);
                 helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
                     console.log(err);
-                     console.log(result);
+                    console.log(result);
                     res.json({
                         data: "saved",
                         response: result
@@ -189,8 +180,8 @@ helperMethods.router().put('/EditProfile', helperMethods.upload().single('Profil
     const updateQuery = "UPDATE users SET uName = ?, uSurname = ?, uAddress = ?, uLongitude = ?, uLatitude = ?, uSex = ?, uPicture = '" + req.file.location + "' WHERE uID = ?";
 
     //Check if number and email exists then register 
-    helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uAddress, 
-        req.body.uLongitude, req.body.uLatitude, req.body.uSex, req.body.uID], (err, result, fields) => {
+    helperMethods.conn().query(updateQuery, [req.body.uName, req.body.uSurname, req.body.uAddress,
+    req.body.uLongitude, req.body.uLatitude, req.body.uSex, req.body.uID], (err, result, fields) => {
         console.log(err);
         const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
         var uID = req.body.uID;
