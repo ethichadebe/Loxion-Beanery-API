@@ -19,8 +19,8 @@ helperMethods.router().get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
 });
 
 //Returns search results
-helperMethods.router().get('/searchShop/:sName', (req, res, next) => {
-	helperMethods.conn().query("SELECT * FROM `shops` WHERE sName LIKE '%" + req.params.sName + "%'", (err, rows, fields) => {
+helperMethods.router().get('/searchShop/:uID/:sLatitude/:sLongitude/:sName', (req, res, next) => {
+	helperMethods.conn().query("SELECT shops.*, (SELECT COUNT(*) FROM shoplikes WHERE shoplikes.uID = ? AND (shoplikes.sID = shops.sID)) AS isLiked, (SELECT 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(shops.sLatitude)) * COS(RADIANS(?)) * COS(RADIANS(shops.sLongitude - ?)) + SIN(RADIANS(shops.sLatitude)) * SIN(RADIANS(?)))))) AS distance FROM shops WHERE sName LIKE '%" + req.params.sName + "%'",[req.params.uID, req.params.sLatitude, req.params.sLongitude, req.params.sLatitude], (err, rows, fields) => {
 		console.log(err);
 		console.log(rows);
 		if (rows.length > 0) {
