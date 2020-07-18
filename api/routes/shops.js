@@ -18,6 +18,24 @@ helperMethods.router().get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
 	});
 });
 
+//Returns search results
+helperMethods.router().get('/searchShop/:sName', (req, res, next) => {
+	helperMethods.conn().query("SELECT * FROM `shops` WHERE sName LIKE '%?%'", [req.params.sName], (err, rows, fields) => {
+		console.log(err);
+		console.log(rows);
+		if (rows.length > 0) {
+			res.json({
+				message: "shops",
+				shops: rows
+			})
+		} else {
+			res.json({
+				message: "empty"
+			})
+		}
+	});
+});
+
 //Returns all shops owned by user
 helperMethods.router().get('/MyShops/:uID', (req, res, next) => {
 	helperMethods.conn().query("SELECT shops.*, usershopbridge.uRole, (SELECT COUNT(*) FROM orders WHERE (shops.sID = orders.sID) AND (orders.oStatus = 'Waiting for order')) AS nOrders FROM shops, usershopbridge WHERE (shops.sID = usershopbridge.sID) AND (usershopbridge.uID = ?) AND (shops.isActive != 2) ORDER BY shops.sStatus DESC", [req.params.uID], (err, rows, fields) => {//WHERE uID=?", 
