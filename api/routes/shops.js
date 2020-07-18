@@ -20,7 +20,7 @@ helperMethods.router().get('/:uID/:sLatitude/:sLongitude', (req, res, next) => {
 
 //Returns search results
 helperMethods.router().get('/searchShop/:sName', (req, res, next) => {
-	helperMethods.conn().query("SELECT * FROM `shops` WHERE sName LIKE %?%", [req.params.sName], (err, rows, fields) => {
+	helperMethods.conn().query("SELECT * FROM `shops` WHERE sName LIKE '%" + req.params.sName + "%'", (err, rows, fields) => {
 		console.log(err);
 		console.log(rows);
 		if (rows.length > 0) {
