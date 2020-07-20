@@ -88,6 +88,7 @@ helperMethods.router().get('/:sID', (req, res, next) => {
 helperMethods.router().get('/DailyReport/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM orders WHERE sID = ?", req.params.sID, (err, rows, fields) => {
         console.log(err);
+        console.log(rows);
         //console.log(rows);
         if (rows.length > 0) {
             res.json({
