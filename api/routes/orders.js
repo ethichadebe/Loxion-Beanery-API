@@ -84,6 +84,24 @@ helperMethods.router().get('/:sID', (req, res, next) => {
     });
 });
 
+//Returns all orders for a specific shop
+helperMethods.router().get('/DailyReport/:sID', (req, res, next) => {
+    helperMethods.conn().query("SELECT * FROM orders WHERE sID = ?", req.params.sID, (err, rows, fields) => {
+        console.log(err);
+        //console.log(rows);
+        if (rows.length > 0) {
+            res.json({
+                message: "orders",
+                orders: rows
+            })
+        } else {
+            res.json({
+                message: "empty"
+            })
+        }
+    });
+});
+
 //Returns all past orders for a specific shop
 helperMethods.router().get('/AdminPastOrders/:sID', (req, res, next) => {
     helperMethods.conn().query("SELECT * FROM orders WHERE sID = ? AND orders.oStatus = 'Collected'", req.params.sID, (err, rows, fields) => {
