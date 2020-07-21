@@ -198,6 +198,29 @@ helperMethods.router().put('/EditProfile', helperMethods.upload().single('Profil
 
 });
 
+//Update user location
+helperMethods.router().put('/EditLocation', (req, res, next) => {
+    console.log(req.file);
+    const updateQuery = "UPDATE users SET uAddress = ?, uLongitude = ?, uLatitude = ? WHERE uID = ?";
+
+    //Check if number and email exists then register 
+    helperMethods.conn().query(updateQuery, [req.body.uAddress, req.body.uLongitude, req.body.uLatitude, req.body.uID], (err, result, fields) => {
+        console.log(err);
+        const selectQuery = "SELECT * FROM `users` WHERE  `uID` = ?";
+        var uID = req.body.uID;
+        console.log(uID);
+        helperMethods.conn().query(selectQuery, [uID], (err, result, fields) => {
+            console.log(err);
+            console.log(result);
+            res.json({
+                data: "saved",
+                response: result
+            })
+        });
+    });
+
+});
+
 //Update user profile picture
 helperMethods.router().put('/EditProfilePicture', helperMethods.upload().single('ProfilePicture'), (req, res, next) => {
     console.log(req.file);
