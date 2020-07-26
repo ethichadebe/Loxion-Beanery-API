@@ -42,7 +42,7 @@ const conn = mysql.createConnection({
     host: 'sql7.freemysqlhosting.net',
     database: 'sql7357017',
     user: 'sql7357017',
-    password: 'Xwx7DNPW1U',
+    password: 'yraqaTdVb9',
     port: '3306'
 });
 
