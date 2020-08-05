@@ -25,10 +25,10 @@ const storage = multerS3({
     s3: s3,
     bucket: 'loxionbeanery',
     acl: 'public-read',
-    metadata: function (req, file, cb) {
+    metadata: function(req, file, cb) {
         cb(null, { fieldName: file.originalname });
     },
-    key: function (req, file, cb) {
+    key: function(req, file, cb) {
         cb(null, file.originalname)
     }
 });
@@ -39,10 +39,10 @@ const upload = multer({ storage: storage });
 
 //Database connection remote 
 const conn = mysql.createConnection({
-    host: 'sql7.freemysqlhosting.net',
-    database: 'sql7357017',
-    user: 'sql7357017',
-    password: 'yraqaTdVb9',
+    host: 'ethichadebe.co.za',
+    database: 'ethicxuq_ethichadebe',
+    user: 'ethicxuq',
+    password: '@Mthobisi1997',
     port: '3306'
 });
 
@@ -72,29 +72,29 @@ function addZero(data) {
 
 module.exports = {
     //Current date time generator
-    createdAt: function () {
+    createdAt: function() {
         var currentdate = new Date();
-        return currentdate.getFullYear() + "-"
-            + addZero("" + (currentdate.getMonth() + 1)) + "-"
-            + addZero("" + currentdate.getDate()) + " "
-            + addZero("" + currentdate.getHours()) + ":"
-            + addZero("" + currentdate.getMinutes()) + ":"
-            + addZero("" + currentdate.getSeconds());
+        return currentdate.getFullYear() + "-" +
+            addZero("" + (currentdate.getMonth() + 1)) + "-" +
+            addZero("" + currentdate.getDate()) + " " +
+            addZero("" + currentdate.getHours()) + ":" +
+            addZero("" + currentdate.getMinutes()) + ":" +
+            addZero("" + currentdate.getSeconds());
 
     },
 
     //Database connection    
-    conn: function (err) {
+    conn: function(err) {
         return conn;
     },
 
     //Upload
-    upload: function () {
+    upload: function() {
         return upload;
     },
 
     //Upload
-    router: function () {
+    router: function() {
         return router;
     },
 
@@ -112,7 +112,7 @@ module.exports = {
         },
     }*/
 
-    sendNotification: function (message, res) {
+    sendNotification: function(message, res) {
         var message = message;
 
         // Send a message to devices subscribed to the provided topic.
@@ -128,4 +128,3 @@ module.exports = {
             });
     }
 };
-
