@@ -39,10 +39,10 @@ const upload = multer({ storage: storage });
 
 //Database connection remote 
 const conn = mysql.createConnection({
-    host: 'ethichadebe.co.za',
-    database: 'ethicxuq_ethichadebe',
-    user: 'ethicxuq',
-    password: '@Mthobisi1997',
+    host: 'sql7.freemysqlhosting.net',
+    database: 'sql7358850',
+    user: 'sql7358850',
+    password: 'aZp5b1k8eQ',
     port: '3306'
 });
 
