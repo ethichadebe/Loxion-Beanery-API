@@ -37,10 +37,10 @@ const upload = multer({ storage: storage });
 
 //Database connection remote
 const conn = mysql.createConnection({
-  host: "sql7.freemysqlhosting.net",
-  database: "sql7363933",
-  user: "sql7363933",
-  password: "xQWN941cu4",
+  host: "us-cdbr-east-02.cleardb.com",
+  database: "heroku_8e5ab4be3208443",
+  user: "b4eef8474a117c",
+  password: "735a6524",
   port: "3306",
 });
 
